@@ -408,7 +408,11 @@ class Router:
                     return None, resp.error or f"HTTP {resp.status_code}"
                 break
             md = t1.extract_main_content(resp.text, current)
-            text = md if md and len(md) > 400 else t1.visible_text(resp.text)
+            visible = t1.visible_text(resp.text)
+            # trafilatura is article-tuned and can drop list-like content
+            # (job boards, product grids); fall back to visible text when
+            # it is clearly the richer source.
+            text = md if md and len(md) > 400 and len(md.split()) * 1.5 >= len(visible.split()) else visible
             parts.append(f"[page {page_no + 1}: {current}]\n{text}")
             current = t1.find_next_page(resp.text, current) if paginate else None
         if not parts:

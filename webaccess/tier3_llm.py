@@ -28,7 +28,8 @@ def extract_jobs_llm(content: str, source_url: str, *,
     prompt = f"""Extract every job posting from this page content (source: {source_url}).
 
 Return ONLY a JSON array. Each element: {{"title": str, "location": str|null, "company": str|null, "url": str|null, "date_posted": "YYYY-MM-DD"|null, "salary": str|null, "department": str|null}}.
-Rules: use null for anything not shown on the page — do NOT guess or infer. Resolve relative URLs against {source_url}. If there are no job postings, return [].
+Rules: extract EVERY posting in the content — all of them, even if there are dozens; never stop early, never summarize or sample the list. Use null for anything not shown on the page — do NOT guess or infer. Resolve relative URLs against {source_url}. If there are no job postings, return [].
+Before answering, count the postings in the content and make sure your array has that many elements.
 
 PAGE CONTENT:
 {_clip(content)}"""

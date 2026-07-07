@@ -60,14 +60,14 @@
   },
   "www.anthropic.com": {
     "fields": {
-      "tier": 2,
-      "method": "rendered_llm",
+      "tier": 1,
+      "method": "static_llm",
       "params": {
         "model": "haiku"
       },
       "model": "haiku",
-      "created_at": 1783439440.3646028,
-      "last_verified": 1783439440.3646038,
+      "created_at": 1783385930.9433045,
+      "last_verified": 1783385930.943305,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -103,15 +103,14 @@
   },
   "job-boards.greenhouse.io/anthropic": {
     "jobs": {
-      "tier": 0,
-      "method": "ats_api",
+      "tier": 1,
+      "method": "static_llm",
       "params": {
-        "platform": "greenhouse",
-        "token": "anthropic"
+        "model": "haiku"
       },
-      "model": null,
-      "created_at": 1783438975.3009052,
-      "last_verified": 1783438975.3009057,
+      "model": "haiku",
+      "created_at": 1783439467.2362251,
+      "last_verified": 1783439467.2362256,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -159,6 +158,21 @@
       "model": null,
       "created_at": 1783439267.1928723,
       "last_verified": 1783439267.1928725,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "jobs.apple.com": {
+    "jobs": {
+      "tier": 2,
+      "method": "rendered_llm",
+      "params": {
+        "model": "haiku"
+      },
+      "model": "haiku",
+      "created_at": 1783439642.2805154,
+      "last_verified": 1783439642.280516,
       "hits": 0,
       "stale": false,
       "stale_reason": null
