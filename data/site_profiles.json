@@ -1,0 +1,61 @@
+{
+  "job-boards.greenhouse.io/gitlab": {
+    "jobs": {
+      "tier": 1,
+      "method": "static_llm",
+      "params": {
+        "model": "haiku"
+      },
+      "model": "haiku",
+      "created_at": 1783386548.9957042,
+      "last_verified": 1783386548.9957047,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "boards.greenhouse.io/stripe": {
+    "jobs": {
+      "tier": 0,
+      "method": "ats_api",
+      "params": {
+        "platform": "greenhouse",
+        "token": "stripe"
+      },
+      "model": null,
+      "created_at": 1783385894.4879892,
+      "last_verified": 1783385894.4879894,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "www.python.org": {
+    "page_info": {
+      "tier": 1,
+      "method": "static_trafilatura",
+      "params": {},
+      "model": null,
+      "created_at": 1783385912.897111,
+      "last_verified": 1783385912.8971117,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "www.anthropic.com": {
+    "fields": {
+      "tier": 1,
+      "method": "static_llm",
+      "params": {
+        "model": "haiku"
+      },
+      "model": "haiku",
+      "created_at": 1783385930.9433045,
+      "last_verified": 1783385930.943305,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  }
+}

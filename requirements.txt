@@ -1,0 +1,14 @@
+# Core pipeline
+httpx>=0.27
+selectolax>=0.3
+pydantic>=2.6
+trafilatura>=2.0
+# Tier 2 rendering. 1.56.x matches the Chromium build pre-installed in
+# Claude Code remote environments (/opt/pw-browsers, chromium-1194);
+# newer playwright versions demand a browser download the env forbids.
+playwright==1.56.0
+# Benchmarked alternative for Tiers 1-2 (optional for the router itself)
+crawl4ai>=0.9
+lxml~=5.3
+pyyaml>=6.0
+pytest>=8.0
