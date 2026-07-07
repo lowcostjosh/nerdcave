@@ -1,14 +1,15 @@
 {
   "job-boards.greenhouse.io/gitlab": {
     "jobs": {
-      "tier": 1,
-      "method": "static_llm",
+      "tier": 0,
+      "method": "ats_api",
       "params": {
-        "model": "haiku"
+        "platform": "greenhouse",
+        "token": "gitlab"
       },
-      "model": "haiku",
-      "created_at": 1783386548.9957042,
-      "last_verified": 1783386548.9957047,
+      "model": null,
+      "created_at": 1783386995.573573,
+      "last_verified": 1783386995.5735736,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -53,6 +54,21 @@
       "model": "haiku",
       "created_at": 1783385930.9433045,
       "last_verified": 1783385930.943305,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "quotes.toscrape.com": {
+    "fields": {
+      "tier": 2,
+      "method": "rendered_llm",
+      "params": {
+        "model": "haiku"
+      },
+      "model": "haiku",
+      "created_at": 1783438851.5924904,
+      "last_verified": 1783438851.5924907,
       "hits": 0,
       "stale": false,
       "stale_reason": null
