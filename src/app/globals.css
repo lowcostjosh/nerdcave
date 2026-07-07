@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+/* CognitiveOS design tokens — cream / ink / gold, per the brand deck.
+   Both UIs consume these via Tailwind arbitrary values or the utilities below. */
+:root {
+  --cos-cream: #f6f3ec;
+  --cos-cream-deep: #efe9dc;
+  --cos-ink: #202b3c;
+  --cos-ink-soft: #46536b;
+  --cos-slate: #64748b;
+  --cos-gold: #b9985a;
+  --cos-gold-soft: #f3e9d2;
+  --cos-teal: #3e6d64;
+  --cos-teal-soft: #e3ede9;
+  --cos-red: #a24936;
+  --cos-red-soft: #f6e4de;
+  --cos-card: #fffdf8;
+  --cos-line: #e3ddcf;
+}
+
+@theme inline {
+  --color-cream: var(--cos-cream);
+  --color-cream-deep: var(--cos-cream-deep);
+  --color-ink: var(--cos-ink);
+  --color-ink-soft: var(--cos-ink-soft);
+  --color-slate-mid: var(--cos-slate);
+  --color-gold: var(--cos-gold);
+  --color-gold-soft: var(--cos-gold-soft);
+  --color-teal: var(--cos-teal);
+  --color-teal-soft: var(--cos-teal-soft);
+  --color-brick: var(--cos-red);
+  --color-brick-soft: var(--cos-red-soft);
+  --color-card: var(--cos-card);
+  --color-line: var(--cos-line);
+}
+
+body {
+  background: var(--cos-cream);
+  color: var(--cos-ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Small shared utilities */
+.cos-card {
+  background: var(--cos-card);
+  border: 1px solid var(--cos-line);
+  border-radius: 0.75rem;
+}
+
+.cos-kicker {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cos-gold);
+}
