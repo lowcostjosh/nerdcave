@@ -91,14 +91,23 @@ later. Nothing vision-first earns a default slot.
 
 ## Validation summary
 
-_(filled from validation/*.json — see that directory for full diffs)_
+Full field-level diffs and mismatch causes: `validation/*.json`. Every
+mismatch found was an omission (null / missing item) — **zero hallucinated
+values across the entire run**; when data wasn't visible the pipeline
+returned null rather than inventing it.
 
 | Group | Sites | Outcome |
 |---|---|---|
 | Greenhouse/Lever (Tier 0 + forced page-extraction diff vs API) | pending | pending |
-| Custom careers (no ATS API) | pending | pending |
-| JS-heavy SPAs | pending | pending |
-| General pages + guardrails | pending | pending |
+| Custom careers, no ATS API (Apple, Amazon, Airbnb; Netflix/Microsoft screened out as Eightfold-hosted) | 3 | Apple: Tier 2/haiku, 20/20 page-1 postings field-perfect after fixes (was 2/19 — under-extraction bug found by this validation and fixed). Airbnb: Tier 2/haiku, 10/10 postings, 5/5 field-checked correct. Amazon: full ladder to Tier 4/vision, 6 postings field-correct but partial recall (6 of 500+, page-1-only) — the one legitimate vision case found, and the weakest result; recall at LLM tiers is the known limitation vs exact API tiers |
+| JS-heavy SPAs (quotes.toscrape JS, React shopping cart, R&M React app) | 3 | All: static tiers correctly skipped (JS-shell detection), resolved Tier 2/haiku, 6–8s, ~25k tokens. Field accuracy 8/8 after the aria-preference fix (7/8 before — placeholder lived only in the a11y snapshot). Cache replay confirmed (`rendered_llm(cached)`) |
+| General pages (python.org about, Anthropic pricing, EFF contact) | 3 | All Tier 1/haiku, 9–17s, ~25k tokens. EFF contact 6/6 fields; python.org 3/3 fields; Anthropic pricing initially returned null price at Tier 1 with success=true — fixed: null requested fields now escalate (retest: Tier 2/haiku, `Pro / $17` correct) |
+| Guardrails (LinkedIn, twitter.com, Figma files) | 3 | LinkedIn + Twitter: `blocked_robots`, zero fetch attempts, clean exit 0. Figma (robots-allowed, real login wall): `auth_required` via render-time detection — distinct code path, no bypass attempted. Unreachable host: bounded ladder, exit 1 |
+
+Bugs found by validation and fixed in the same session: per-tenant cache
+keys (two companies on one ATS host would have shared a recipe), partial
+field results not escalating, aria snapshot discarded on small pages,
+list under-extraction at LLM tiers, prose-wrapped JSON parsing.
 
 ## Guardrails (defaults, not options)
 
