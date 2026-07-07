@@ -1,0 +1,151 @@
+{
+  "url": "https://careers.airbnb.com/positions/",
+  "task_kind": "jobs",
+  "data": [
+    {
+      "title": "(Contract) Senior Data Scientist, Platform Inference \u2013 MarTech DS Measurement",
+      "location": "United States",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7732569/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Data Science"
+    },
+    {
+      "title": "Acquisition Manager",
+      "location": "Paris, France",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7995199/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Account Management"
+    },
+    {
+      "title": "Acquisition Manager",
+      "location": "Berlin, Germany",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7995153/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Account Management"
+    },
+    {
+      "title": "Acquisition Manager",
+      "location": "Milan, Italy",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7996480/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Account Management"
+    },
+    {
+      "title": "AI Engineer, Community Support Engineering",
+      "location": "China - Remote",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7946288/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Android Software Engineer, Quality Platform",
+      "location": "Remote, Brazil",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7744247/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Associate Legal Counsel, Japan",
+      "location": "Tokyo, Japan",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7789554/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Legal"
+    },
+    {
+      "title": "Associate Principal, Strategic Finance & Analytics",
+      "location": "United States",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/8043588/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Finance"
+    },
+    {
+      "title": "Audiovisual Infrastructure Engineer",
+      "location": "San Francisco, CA",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7917632/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Information Technology"
+    },
+    {
+      "title": "Business Operations and Growth Lead",
+      "location": "Sydney, Australia",
+      "company": null,
+      "url": "https://careers.airbnb.com/positions/7999656/",
+      "date_posted": null,
+      "salary": null,
+      "department": "Strategy & Planning"
+    }
+  ],
+  "tier_used": 2,
+  "method": "rendered_llm",
+  "model_used": "haiku",
+  "latency_s": 46.109906975000115,
+  "tokens_used": 86784,
+  "success": true,
+  "status": "ok",
+  "notes": "jsonld_static: no job postings extracted | static_llm: no job postings extracted | static_llm: no job postings extracted | jsonld_rendered: no job postings extracted",
+  "attempts": [
+    {
+      "tier": 0,
+      "method": "jsonld_static",
+      "model_used": null,
+      "latency_s": 0.0012089270000501529,
+      "tokens_used": null,
+      "success": false,
+      "error": "no job postings extracted"
+    },
+    {
+      "tier": 1,
+      "method": "static_llm",
+      "model_used": "haiku",
+      "latency_s": 11.72591236300002,
+      "tokens_used": 24912,
+      "success": false,
+      "error": "no job postings extracted"
+    },
+    {
+      "tier": 1,
+      "method": "static_llm",
+      "model_used": "sonnet",
+      "latency_s": 5.027563481000016,
+      "tokens_used": 32708,
+      "success": false,
+      "error": "no job postings extracted"
+    },
+    {
+      "tier": 2,
+      "method": "jsonld_rendered",
+      "model_used": null,
+      "latency_s": 0.0029817689999731556,
+      "tokens_used": null,
+      "success": false,
+      "error": "no job postings extracted"
+    },
+    {
+      "tier": 2,
+      "method": "rendered_llm",
+      "model_used": "haiku",
+      "latency_s": 29.352240435000056,
+      "tokens_used": 29164,
+      "success": true,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "url": "https://jobs.lever.co/wealthfront",
+  "task_kind": "jobs",
+  "data": [
+    {
+      "title": "Android Engineer",
+      "location": "Palo Alto, CA",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/78d6f6d5-1f08-4d5d-87be-c4250567bfb5",
+      "date_posted": "2023-09-11",
+      "salary": null,
+      "department": "Engineering - Android"
+    },
+    {
+      "title": "Backend Engineer",
+      "location": "Palo Alto, CA",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/f5a0963a-ca1a-4140-b9e6-dbf6072093fe",
+      "date_posted": "2023-09-11",
+      "salary": null,
+      "department": "Engineering - Backend"
+    },
+    {
+      "title": "Brokerage Operations Specialist",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/ae0292a3-7618-40a8-a68b-81ce3bfa1138",
+      "date_posted": "2026-06-09",
+      "salary": null,
+      "department": "Brokerage Ops"
+    },
+    {
+      "title": "Corporate Counsel",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/94671a52-03e0-46d2-ace2-49158fc4685b",
+      "date_posted": "2026-04-22",
+      "salary": null,
+      "department": "Legal"
+    },
+    {
+      "title": "Engineering Manager",
+      "location": "Palo Alto, CA",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/5cead124-1663-4ae2-9c28-708e1dee1ad7",
+      "date_posted": "2023-12-01",
+      "salary": null,
+      "department": "Engineering - Manager"
+    },
+    {
+      "title": "Fraud Operations Specialist",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/a2f2c3f4-adcd-472f-a072-3334ec202520",
+      "date_posted": "2026-06-09",
+      "salary": null,
+      "department": "Brokerage Ops"
+    },
+    {
+      "title": "iOS Engineer",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/eccc8bc6-81e4-4d43-af11-b246ba28c56e",
+      "date_posted": "2026-02-12",
+      "salary": null,
+      "department": "Engineering - iOS"
+    },
+    {
+      "title": "Market Commentary Writer",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/796920df-7d0e-4b84-9501-3243b96cd5a9",
+      "date_posted": "2026-04-08",
+      "salary": null,
+      "department": "Communications"
+    },
+    {
+      "title": "Mortgage Operations - Loan Processor",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/7b2730f5-dd6e-4458-b42f-c8d8937c0e25",
+      "date_posted": "2025-07-30",
+      "salary": null,
+      "department": "Home Lending"
+    },
+    {
+      "title": "Senior iOS Engineer",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/390412fb-db60-464a-93db-6b9440fb8ce6",
+      "date_posted": "2025-07-21",
+      "salary": null,
+      "department": "Engineering - iOS"
+    },
+    {
+      "title": "Senior Staff Accountant",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/da91e1b2-be47-480e-b86f-c74bd51126f0",
+      "date_posted": "2026-03-09",
+      "salary": null,
+      "department": "Accounting"
+    },
+    {
+      "title": "Senior Staff Product Designer, Cash",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/4fce94a9-fa5d-40e2-80bb-dbc2a5942df4",
+      "date_posted": "2026-04-06",
+      "salary": null,
+      "department": "Design"
+    },
+    {
+      "title": "Senior Systems Engineer, Network",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/93383267-2d57-45d0-bb6a-7d9c5d8b6f3c",
+      "date_posted": "2026-06-24",
+      "salary": null,
+      "department": "Engineering - DevOps"
+    },
+    {
+      "title": "Software Engineer \u2013 DevOps Platform",
+      "location": "Palo Alto, CA (Open to US-based Remote)",
+      "company": "wealthfront",
+      "url": "https://jobs.lever.co/wealthfront/91c149ed-18fa-4e72-a3a6-386840aae86e",
+      "date_posted": "2025-10-03",
+      "salary": null,
+      "department": "Engineering - DevOps"
+    }
+  ],
+  "tier_used": 0,
+  "method": "ats_api:lever",
+  "model_used": null,
+  "latency_s": 1.7955491860000166,
+  "tokens_used": 0,
+  "success": true,
+  "status": "ok",
+  "notes": ""
+}

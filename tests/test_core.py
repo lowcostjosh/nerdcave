@@ -134,3 +134,24 @@ def test_cache_normal_domain_key(tmp_path):
     cache.put("https://acme.com/careers", "jobs", Recipe(tier=1, method="static_llm"))
     # same domain, different path -> same profile (per-domain recipes)
     assert cache.get("https://acme.com/jobs", "jobs") is not None
+
+
+# --- strict field validation + partials (added after validation run 1) -------
+
+def test_validate_fields_requires_all():
+    ok, why = validate_fields({"price": "$10", "email": None}, ["price", "email"])
+    assert not ok and "email" in why
+
+
+def test_validate_page_info_question():
+    data = {"summary": "A page.", "facts": {"x": 1}, "answer": None}
+    assert not validate_page_info(data, has_question=True)[0]
+    assert validate_page_info(data, has_question=False)[0]
+
+
+def test_partial_score():
+    from webaccess.router import _partial_score
+    from webaccess.types import Task
+    t = Task(kind="fields", fields=["a", "b", "c"])
+    assert _partial_score({"a": 1, "b": None, "c": ""}, t) == 1
+    assert _partial_score(None, t) == 0

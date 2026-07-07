@@ -1,0 +1,154 @@
+{
+  "group": "custom-built company careers pages (no public ATS API) — forces Tiers 1-3(4)",
+  "run_date": "2026-07-07",
+  "cli_invocation": "PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers .venv/bin/python -m webaccess.cli --url URL --kind jobs",
+  "candidates_screened": [
+    {"site": "jobs.apple.com/en-us/search", "verdict": "used", "reason": "no ATS vendor signature in HTML; own robots.txt absent/404 (no restriction); custom Apple-built job search app"},
+    {"site": "www.amazon.jobs/en/search", "verdict": "used", "reason": "no ATS vendor signature; robots.txt only disallows /internal paths; custom Amazon-built React app"},
+    {"site": "careers.airbnb.com/positions/", "verdict": "used", "reason": "no ATS vendor signature; WordPress theme 'airbnb-careers' with custom listing backend; robots.txt allows /positions"},
+    {"site": "www.google.com/about/careers/applications/jobs/results", "verdict": "excluded", "reason": "robots.txt disallows the listing path — confirmed independently with Python's stdlib urllib.robotparser (can_fetch() returns False for both the bare listing URL and paginated variants), and the pipeline itself refused with status=blocked_robots. Custom-built (no ATS vendor signature) but not usable under the robots constraint."},
+    {"site": "explore.jobs.netflix.net/careers", "verdict": "rejected pre-run", "reason": "response headers/body show x-ef-* headers and 'Eightfold' branding — hosted on Eightfold.ai talent platform, not genuinely custom"},
+    {"site": "jobs.careers.microsoft.com -> apply.careers.microsoft.com", "verdict": "rejected pre-run", "reason": "same Eightfold.ai platform signature (x-ef-trace-id, docs.eightfold.ai in CSP) as Netflix"},
+    {"site": "careers.spacex.com", "verdict": "rejected pre-run", "reason": "unreachable (connection failure/000 through proxy)"},
+    {"site": "careers.nvidia.com / www.metacareers.com", "verdict": "rejected pre-run", "reason": "Nvidia and Meta both surface myworkdayjobs.com links — Workday-backed, explicitly excluded per task criteria"},
+    {"site": "careers.costco.com", "verdict": "rejected pre-run", "reason": "iCIMS and Taleo signatures present in page HTML"},
+    {"site": "careers.homedepot.com", "verdict": "rejected pre-run", "reason": "myworkdayjobs.com + BrassRing links present"},
+    {"site": "careers.walmart.com / jobs.boeing.com / jobs.disneycareers.com", "verdict": "rejected pre-run", "reason": "robots.txt explicitly disallows the job-search/results path"}
+  ],
+  "sites": [
+    {
+      "site": "Apple Careers",
+      "url": "https://jobs.apple.com/en-us/search?location=united-states-USA",
+      "result": {
+        "final_tier": 1,
+        "final_method": "static_llm",
+        "final_model": "sonnet",
+        "success": true,
+        "status": "ok",
+        "latency_s": 104.87,
+        "tokens_used": 38720,
+        "job_count_returned": 2
+      },
+      "attempt_ladder": [
+        {"tier": 0, "method": "jsonld_static", "result": "fail: no job postings extracted"},
+        {"tier": 1, "method": "static_llm", "model": "haiku", "result": "fail: claude CLI exit 1 (transient CLI/model error, no data)"},
+        {"tier": 1, "method": "static_llm", "model": "sonnet", "result": "success: 2 postings"}
+      ],
+      "ground_truth_method": "curl of same URL (static HTML, matches tier-1 input) + Playwright-rendered page (networkidle, 4s settle) for the live 'sort by newest' view; fetched the 2 returned job detail pages directly to confirm title/location/department",
+      "ground_truth_notes": "The static HTML tier-1 actually fetched contains 19 full SSR job-listing entries (accordion items with title, role number, and a 'submit resume' block per job) — not just the 2 the pipeline returned. Confirmed by grepping unique job-title-<id> anchors in the raw HTML saved during discovery. The rendered ('newest sort', 600+ results) view is a different, larger, JS-paginated list layered on top of that same first SSR page.",
+      "field_accuracy": {
+        "postings_checked": 2,
+        "postings_available_on_fetched_page": 19,
+        "postings_available_site_wide": "600+ (paginated, JS-driven, well beyond tier-1 static reach)",
+        "title_correct": "2/2",
+        "location_correct": "2/2 (verified against detail page body text: 'Seattle' and 'Cupertino')",
+        "department_correct": "2/2 (verified against detail page body text: 'Software and Services' and 'Machine Learning and AI')",
+        "hallucination": false
+      },
+      "mismatches": [
+        {
+          "tag": "parser_bug",
+          "field": "job_count",
+          "detail": "Tier-1 static_llm (sonnet) extracted only 2 of the 19 job postings present in the exact same static HTML it was given. The 2 it did return are accurate on every field, so this is an LLM extraction-completeness bug, not a hallucination or pagination limit — the data was already on the page."
+        }
+      ]
+    },
+    {
+      "site": "Amazon Jobs",
+      "url": "https://www.amazon.jobs/en/search",
+      "result": {
+        "final_tier": 4,
+        "final_method": "vision",
+        "final_model": "haiku",
+        "success": true,
+        "status": "ok",
+        "latency_s": 57.10,
+        "tokens_used": 238438,
+        "job_count_returned": 6
+      },
+      "attempt_ladder": [
+        {"tier": 0, "method": "jsonld_static", "result": "fail: no job postings extracted"},
+        {"tier": 1, "method": "static_llm", "model": "haiku", "result": "fail: no job postings extracted (page is a client-rendered React app; static HTML ~37KB, no job data server-side)"},
+        {"tier": 1, "method": "static_llm", "model": "sonnet", "result": "fail: no job postings extracted"},
+        {"tier": 2, "method": "jsonld_rendered", "result": "fail: no job postings extracted"},
+        {"tier": 2, "method": "rendered_llm", "model": "haiku", "result": "fail: no job postings extracted"},
+        {"tier": 2, "method": "rendered_llm", "model": "sonnet", "result": "fail: no job postings extracted (rendered DOM/a11y-tree extraction failed even though a plain Playwright inner_text() render clearly contains the job list — likely a DOM/a11y-tree serialization or truncation issue on this page, not a fundamentally hidden list)"},
+        {"tier": 4, "method": "vision", "model": "haiku", "result": "success: 6 postings"}
+      ],
+      "ground_truth_method": "Playwright render (networkidle, 5s settle, executable_path=/opt/pw-browsers/chromium, HTTPS_PROXY-configured proxy, --ssl-version-max=tls1.2) of the same URL, body inner_text captured",
+      "ground_truth_notes": "Live listing's true first result is 'Senior Program Manager, 3P Carriers, US MFN Transportation' (Seattle, WA) — the pipeline's vision-tier output skipped this and started from the 2nd real result. Site shows 500+ jobs in the US alone (paginated 'Full Time (500+)' facet).",
+      "field_accuracy": {
+        "postings_checked": 6,
+        "postings_available_on_page_viewport": "at least 7 (1 missed + 6 returned) before scrolling; 500+ site-wide",
+        "title_correct": "6/6",
+        "location_correct": "6/6",
+        "date_posted_correct": "6/6",
+        "department_correct": "6/6, but department/company values are inferred from parenthetical/appositive text in the job title itself (e.g. 'HR Partner, Human Resources, AMZL' -> department='Human Resources') since Amazon's list view has no explicit department field — treated as ambiguous rather than wrong",
+        "hallucination": false
+      },
+      "mismatches": [
+        {
+          "tag": "parser_bug",
+          "field": "job_count / first-item omission",
+          "detail": "Vision(tier4) extraction missed the topmost visible job on the real page ('Senior Program Manager, 3P Carriers, US MFN Transportation', Seattle WA, job ID 10403404) — likely a viewport/scroll-crop issue in the screenshot capture, not a hallucination of the 6 it did return."
+        },
+        {
+          "tag": "pagination_truncation",
+          "field": "job_count",
+          "detail": "Only 6 of 500+ US postings returned; expected for a single-viewport vision fallback with no pagination/scroll loop, not a defect per se."
+        },
+        {
+          "tag": "ambiguous",
+          "field": "department/company",
+          "detail": "department and company fields are derived from title substrings (e.g. 'Amazon Robotics', 'AWS Legal', 'DCEO') rather than a distinct labeled field on the page, since none exists in the list view."
+        }
+      ]
+    },
+    {
+      "site": "Airbnb Careers",
+      "url": "https://careers.airbnb.com/positions/",
+      "result": {
+        "final_tier": 2,
+        "final_method": "rendered_llm",
+        "final_model": "haiku",
+        "success": true,
+        "status": "ok",
+        "latency_s": 46.11,
+        "tokens_used": 86784,
+        "job_count_returned": 10
+      },
+      "attempt_ladder": [
+        {"tier": 0, "method": "jsonld_static", "result": "fail: no job postings extracted"},
+        {"tier": 1, "method": "static_llm", "model": "haiku", "result": "fail: no job postings extracted"},
+        {"tier": 1, "method": "static_llm", "model": "sonnet", "result": "fail: no job postings extracted (curious: raw curl of this URL shows the same 10 postings server-rendered in plain text in a WordPress accordion/list; tier-1 LLM still failed to extract them from the static HTML, unlike tier-2 on the rendered DOM)"},
+        {"tier": 2, "method": "jsonld_rendered", "result": "fail: no job postings extracted"},
+        {"tier": 2, "method": "rendered_llm", "model": "haiku", "result": "success: 10 postings"}
+      ],
+      "ground_truth_method": "curl of the same URL (confirmed genuinely server-rendered, WordPress) + fetched 5 individual job detail pages directly for title/location/department cross-check",
+      "ground_truth_notes": "This is the cleanest of the 3 sites: page 1 of the WordPress-rendered listing shows exactly 10 postings before the 'non-permanent contractor' CTA block, matching the pipeline's count exactly, in the same order.",
+      "field_accuracy": {
+        "postings_checked": 5,
+        "postings_available_on_fetched_page": 10,
+        "postings_available_site_wide": "10+ pages (pagination link to /positions/page/2/); exact site-wide total not surfaced as a number on page 1",
+        "title_correct": "5/5",
+        "location_correct": "5/5 (verified via each job's 'Offices:' field on its detail page)",
+        "department_correct": "5/5",
+        "hallucination": false
+      },
+      "mismatches": [
+        {
+          "tag": "ambiguous",
+          "field": "location",
+          "detail": "For 'AI Engineer, Community Support Engineering' the listing page (and pipeline output) shows location='China - Remote', while the job's own detail page 'Offices:' field says 'Beijing, China' (no remote qualifier). This reflects a genuine difference between the listing badge and the detail-page field on Airbnb's own site, not a pipeline error — the pipeline correctly transcribed what the listing page shows."
+        }
+      ]
+    }
+  ],
+  "top_observations": [
+    "All 3 sites required escalation past tier-0 (no JSON-LD job postings on any of them) and past at least one LLM-on-static attempt — consistent with the group definition (no public ATS API, custom JS-heavy front ends). Amazon in particular burned through the full ladder (0->1->2->4, 7 attempts, 238K tokens, 57s) before vision succeeded, because its tier-2 rendered_llm attempts failed even though a plain Playwright render clearly contains the job list — worth investigating whether the tier-2 DOM/a11y serialization is truncating or mis-structuring React-virtualized list content.",
+    "When tier-1/tier-2 LLM extraction does succeed, per-field accuracy on the postings it returns is high (Apple 2/2, Amazon 6/6, Airbnb 5/5 correct on title/location; no hallucinated postings on any site) — the failure mode across sites is under-coverage (missing available postings), not fabrication.",
+    "Two distinct under-coverage bugs were caught by ground-truthing the exact HTML the model saw: Apple's tier-1 sonnet pass extracted only 2 of 19 postings that were actually present in the fetched static HTML (a clean parser_bug), and Amazon's tier-4 vision pass silently dropped the topmost on-screen job (viewport/scroll-crop parser_bug). Neither would be visible from the CLI's own JSON output alone since 'success' just requires >=1 valid posting.",
+    "Robots.txt correctness matters more than expected: Google's careers listing looked plausibly allowed on a naive read of the disallow rules (only ?page= variants are listed under User-agent: *), but urllib.robotparser — and the pipeline itself — both independently disallow the bare URL, so it was excluded rather than force-run.",
+    "Pre-run screening eliminated more 'famous' candidates than it kept: Netflix and Microsoft careers are both actually Eightfold.ai-hosted (x-ef-* headers, docs.eightfold.ai in CSP), Nvidia/Meta leak myworkdayjobs.com links, Costco runs on iCIMS+Taleo, Home Depot on Workday+BrassRing, and Walmart/Boeing/Disney disallow their job-search paths in robots.txt — genuinely custom, robots-permitted, ATS-free career sites are the exception, not the rule, among large companies."
+  ]
+}

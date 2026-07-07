@@ -1,0 +1,455 @@
+{
+  "url": "https://job-boards.greenhouse.io/gitlab",
+  "task_kind": "jobs",
+  "data": [
+    {
+      "title": "Backend Engineer (Ruby), AI Engineering: Duo Agent Platform Tools",
+      "location": "Remote, Canada; Remote, United Kingdom",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, AI Engineering: Chat",
+      "location": "Remote, Americas; Remote, Canada",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Senior Backend Engineer (Ruby), AI Engineering: Duo Agent Platform Tools",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Distinguished Engineer, Agentic SDLC & Non\u2011Linear Productivity",
+      "location": "Remote, Canada; Remote, US",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Intermediate Backend Engineer (C), Tenant Scale: Git",
+      "location": "Remote, India",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, Data Foundations",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, Growth",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, Observability, Monitoring, and Integrations (Monetization)",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, Continuous Delivery",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Senior Backend Engineer (Go), Continuous Delivery",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Staff Backend Engineer (Go), Continuous Delivery",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Staff Backend Engineer (Ruby on Rails/AI), Verify",
+      "location": "Remote, United Kingdom",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Vice President of Engineering, DevOps Engineering",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Director of Engineering, Growth & Monetization",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Executive Assistant (United Kingdom)",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, Geo for Self-Managed Customers",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, Gitlab Delivery: Upgrades",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Senior Backend Engineer, Gitlab Delivery: Zero Downtime Upgrades",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Site Reliability Engineer, Cloud Cost Utilization",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Staff Backend Engineer, Gitlab Delivery: Upgrades",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Director of Engineering, Security Factory",
+      "location": "Remote, Israel; Remote, United Kingdom",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, SSCS: Supply Chain",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Senior Backend Engineer (RoR/Go), SSCS: Pipeline Security",
+      "location": "Remote, Canada; Remote, Israel; Remote, United Kingdom; Remote, US",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Senior Backend Engineer, SSCS: Supply Chain",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Senior Software Engineer (RoR/Go), SSCS: Authentication",
+      "location": "Remote, Canada",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Staff Backend Engineer, Software Supply Chain Security",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Staff Backend Engineer, SSCS: AI Governance",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Engineering Manager, Cell Infrastructure",
+      "location": "Remote",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Engineering"
+    },
+    {
+      "title": "Vice President, Data & Insights",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / CIO"
+    },
+    {
+      "title": "AI Engineer",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / CIO"
+    },
+    {
+      "title": "Director, Enterprise Architecture & Intelligent Automation",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / CIO"
+    },
+    {
+      "title": "Executive Assistant",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / CIO"
+    },
+    {
+      "title": "G&A Engineer, Netsuite",
+      "location": "Remote, North America",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / CIO"
+    },
+    {
+      "title": "Senior AI Engineer",
+      "location": "Remote, Bangalore",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / CIO"
+    },
+    {
+      "title": "Senior Manager, End User Services",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / CIO"
+    },
+    {
+      "title": "Senior Program Manager, Enterprise Technology & AI",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / CIO"
+    },
+    {
+      "title": "Senior FP&A Analyst, Corporate Finance",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A"
+    },
+    {
+      "title": "Senior Director, Procurement",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A"
+    },
+    {
+      "title": "Vice President, Finance Strategy & Operations",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A"
+    },
+    {
+      "title": "Commercial Legal Counsel",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A"
+    },
+    {
+      "title": "Principal HRIS Analyst, People Technology - Workday",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / People"
+    },
+    {
+      "title": "Candidate Experience Specialist, Contractor",
+      "location": "Remote, Singapore",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / People"
+    },
+    {
+      "title": "Senior TA Operations Specialist",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "G&A / People"
+    },
+    {
+      "title": "Staff Social Media Manager",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Marketing"
+    },
+    {
+      "title": "AI Transformation Owner, Marketing",
+      "location": "Remote, Canada; Remote, Ireland; Remote, United Kingdom; Remote, US",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Marketing"
+    },
+    {
+      "title": "Lead Global Marketing Campaigns Manager",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Marketing"
+    },
+    {
+      "title": "Staff Lifecycle Marketing Manager",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Marketing"
+    },
+    {
+      "title": "Senior Regional Marketing Manager, EMEA",
+      "location": "Remote, EMEA",
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Marketing"
+    },
+    {
+      "title": "Director, Strategic Partnerships",
+      "location": null,
+      "company": null,
+      "url": null,
+      "date_posted": null,
+      "salary": null,
+      "department": "Marketing"
+    }
+  ],
+  "tier_used": 1,
+  "method": "static_llm",
+  "model_used": "haiku",
+  "latency_s": 83.73841688699997,
+  "tokens_used": 34475,
+  "success": true,
+  "status": "ok",
+  "notes": ""
+}

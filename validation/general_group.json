@@ -1,0 +1,275 @@
+{
+  "group": "A+B - general company pages and guardrail behavior",
+  "env": {
+    "cmd_template": "PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers .venv/bin/python -m webaccess.cli --url URL --kind KIND [--fields ...] [--question ...] [flags]"
+  },
+  "group_a_pages": [
+    {
+      "url": "https://www.python.org/about/",
+      "page_type": "about",
+      "robots_check": "allowed for User-agent: * (only disallows /~guido/orlijn/ and /webstats/)",
+      "ground_truth_source": "curl --compressed https://www.python.org/about/, read as text",
+      "ground_truth_facts": {
+        "hero_tagline": "Python is powerful... and fast; plays well with others; runs everywhere; is friendly & easy to learn; is Open.",
+        "governing_organization": "Python Software Foundation",
+        "package_index_name": "PyPI",
+        "license_type": "OSI-approved open source license"
+      },
+      "runs": [
+        {
+          "kind": "page_info",
+          "question": "What is the tagline / list of characteristics used to describe Python in the intro paragraph of the About page?",
+          "result": {
+            "tier_used": 1,
+            "method": "static_llm",
+            "model_used": "haiku",
+            "latency_s": 11.114545101999994,
+            "tokens_used": 25063,
+            "success": true,
+            "status": "ok"
+          },
+          "returned_summary": "Python can be easy to pick up whether you're a first time programmer or you're experienced with other languages...",
+          "returned_facts_sample": [
+            "Python can be easy to pick up for both first-time and experienced programmers",
+            "Python is developed under an OSI-approved open source license",
+            "Python's license is administered by the Python Software Foundation"
+          ],
+          "verdict": "parser_bug",
+          "note": "The hero tagline ('powerful and fast; plays well with others; runs everywhere; friendly & easy to learn; is Open') was never surfaced in the summary or facts, even though it is the most prominent text on the page. All facts that WERE returned are individually true/verifiable, so this is a completeness gap in content extraction/prioritization, not hallucination -- the LLM answered a plausible-but-wrong slice of the page instead of the literal tagline asked for."
+        },
+        {
+          "kind": "fields",
+          "fields": "governing_organization,package_index_name,license_type",
+          "result": {
+            "tier_used": 1,
+            "method": "static_llm",
+            "model_used": "haiku",
+            "latency_s": 8.905942767999989,
+            "tokens_used": 24799,
+            "success": true,
+            "status": "ok"
+          },
+          "returned_data": {
+            "governing_organization": "Python Software Foundation",
+            "package_index_name": "PyPI",
+            "license_type": "OSI-approved open source license"
+          },
+          "verdict": "match",
+          "note": "All 3 fields exactly correct against ground truth. No mismatches."
+        }
+      ]
+    },
+    {
+      "url": "https://www.anthropic.com/pricing",
+      "page_type": "pricing",
+      "robots_check": "allowed (User-Agent: * / Allow: /)",
+      "ground_truth_source": "curl -L --compressed https://www.anthropic.com/pricing, grepped raw HTML for $-prices (Webflow data-plan attributes)",
+      "ground_truth_facts": {
+        "free_plan_price": "$0",
+        "cheapest_paid_plan_name": "Pro",
+        "cheapest_paid_plan_price_annual_billing": "$17/month (billed $200/yr)",
+        "cheapest_paid_plan_price_monthly_billing": "$20/month",
+        "team_plan_price_per_seat": "$20/seat"
+      },
+      "runs": [
+        {
+          "kind": "page_info",
+          "question": "What is the name and monthly price (annual billing) of the cheapest paid individual plan?",
+          "result": {
+            "tier_used": 1,
+            "method": "static_llm",
+            "model_used": "haiku",
+            "latency_s": 15.576040879999994,
+            "tokens_used": 26875,
+            "success": true,
+            "status": "ok"
+          },
+          "returned_data": {
+            "title": "Pricing",
+            "summary": "Anthropic's Claude subscription plans overview showing three tiers: Free, Pro, and Max.",
+            "cheapest_paid_plan_answer": null
+          },
+          "verdict": "parser_bug",
+          "note": "success=true but the direct answer requested is null. Ground truth ($17/mo Pro, annual) is present as literal visible text in the raw static HTML inside Webflow pricing-card divs, but the tier-1 static content extraction evidently strips/deprioritizes this structured widget markup before it reaches the LLM, so the model correctly declined to guess (no hallucination) but also did not escalate to tier 2 (rendered DOM) to recover the missing number. This is a real gap: 'success: true' with a null answer is a soft failure that a caller could mistake for a validated non-answer."
+        },
+        {
+          "kind": "fields",
+          "fields": "cheapest_paid_plan_name,cheapest_paid_plan_price_monthly_annual_billing",
+          "result": {
+            "tier_used": 1,
+            "method": "static_llm",
+            "model_used": "haiku",
+            "latency_s": 16.527998842000045,
+            "tokens_used": 26883,
+            "success": true,
+            "status": "ok"
+          },
+          "returned_data": {
+            "cheapest_paid_plan_name": "Pro",
+            "cheapest_paid_plan_price_monthly_annual_billing": null
+          },
+          "verdict": "parser_bug (partial)",
+          "note": "Plan name correct ('Pro'). Price field null for the same extraction-gap reason as the page_info run. No hallucinated price was fabricated -- pipeline behaved safely, just incompletely, and did not escalate tiers to fill the gap."
+        }
+      ]
+    },
+    {
+      "url": "https://www.eff.org/contact",
+      "page_type": "contact",
+      "robots_check": "allowed (User-agent: * has no rule disallowing /contact; Crawl-delay: 30 only)",
+      "ground_truth_source": "curl -L --compressed https://www.eff.org/contact, read as text + grep mailto: links and address block",
+      "ground_truth_facts": {
+        "general_contact_email": "info@eff.org",
+        "headquarters_address": "815 Eddy Street, San Francisco, CA 94109 USA",
+        "headquarters_city": "San Francisco",
+        "main_phone": "+1-415-436-9333",
+        "fax": "+1-415-436-9993",
+        "signal_number": "+1-510-243-8020",
+        "office_closure_note": "closed June 29, 2026 through July 3, 2026 (page has a duplicate/typo'd second instance reading 'July 3, 1016')"
+      },
+      "runs": [
+        {
+          "kind": "page_info",
+          "question": "What is the general contact/info email address and what city is EFF headquarters located in?",
+          "result": {
+            "tier_used": 1,
+            "method": "static_llm",
+            "model_used": "haiku",
+            "latency_s": 13.108746429999997,
+            "tokens_used": 26076,
+            "success": true,
+            "status": "ok"
+          },
+          "returned_data_facts": {
+            "general_contact_email": "info@eff.org",
+            "headquarters_city": "San Francisco",
+            "headquarters_address": "815 Eddy Street, San Francisco, CA 94109 USA",
+            "main_phone": "+1-415-436-9333",
+            "fax": "+1-415-436-9993",
+            "signal_number": "+1-510-243-8020",
+            "office_closure": "June 29, 2026 through July 3, 2026"
+          },
+          "verdict": "match",
+          "note": "Every fact verified correct, including secondary details (fax, Signal number, office closure dates). Notably the page itself has a typo where the closure end date appears once as '2026' and once as '1016' -- the model picked the sane '2026' value rather than propagating the corrupted one. No hallucination."
+        },
+        {
+          "kind": "fields",
+          "fields": "support_email,headquarters_city,main_phone",
+          "result": {
+            "tier_used": 1,
+            "method": "static_llm",
+            "model_used": "haiku",
+            "latency_s": 9.166992416000028,
+            "tokens_used": 25709,
+            "success": true,
+            "status": "ok"
+          },
+          "returned_data": {
+            "support_email": "info@eff.org",
+            "headquarters_city": "San Francisco",
+            "main_phone": "+1-415-436-9333"
+          },
+          "verdict": "match",
+          "note": "All 3 fields exactly correct."
+        }
+      ]
+    }
+  ],
+  "group_b_guardrails": [
+    {
+      "test": "jobs kind on LinkedIn job search (robots.txt disallows all crawling for User-agent: *)",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=engineer",
+      "kind": "jobs",
+      "result": {
+        "data": null,
+        "tier_used": null,
+        "method": null,
+        "success": false,
+        "status": "blocked_robots",
+        "notes": "robots.txt disallows fetching this URL; not proceeding",
+        "attempts": []
+      },
+      "exit_code": 0,
+      "verdict": "pass -- clean refusal, no data extracted, no attempts made (robots check short-circuits before any fetch)"
+    },
+    {
+      "test": "login-wall page, robots-blocked variant (example given in task)",
+      "url": "https://twitter.com/home",
+      "kind": "page_info",
+      "result": {
+        "data": null,
+        "success": false,
+        "status": "blocked_robots",
+        "notes": "robots.txt disallows fetching this URL; not proceeding",
+        "attempts": []
+      },
+      "exit_code": 0,
+      "verdict": "pass -- x.com/twitter.com robots.txt disallows all paths for User-agent: *, so this collapses to blocked_robots (same as the LinkedIn case). No crash, no retry."
+    },
+    {
+      "test": "login-wall page, robots-ALLOWED variant, to exercise the distinct auth_required code path",
+      "url": "https://www.figma.com/files/recent",
+      "kind": "page_info",
+      "robots_check": "Figma robots.txt allows User-agent: * generally (only specific bot names and query patterns disallowed); /files/recent itself is not in any Disallow rule",
+      "result": {
+        "data": null,
+        "tier_used": null,
+        "method": null,
+        "success": false,
+        "status": "auth_required",
+        "notes": "auth wall detected after rendering — out of scope, needs auth",
+        "attempts": [
+          {
+            "tier": 1,
+            "method": "static_trafilatura",
+            "success": false,
+            "error": "trafilatura path only serves plain page_info"
+          }
+        ]
+      },
+      "exit_code": 0,
+      "verdict": "pass -- distinct from blocked_robots: robots.txt permitted the fetch, page was actually rendered, an auth wall was detected in content, and the pipeline stopped cleanly with a single attempt (no retry loop, no bypass attempt)."
+    },
+    {
+      "test": "exit code semantics -- success",
+      "url": "https://www.eff.org/contact",
+      "kind": "fields",
+      "exit_code": 0,
+      "verdict": "pass -- status ok, exit 0"
+    },
+    {
+      "test": "exit code semantics -- blocked_robots",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=engineer",
+      "exit_code": 0,
+      "verdict": "pass -- clean refusal treated as exit 0, not an error"
+    },
+    {
+      "test": "exit code semantics -- auth_required",
+      "url": "https://www.figma.com/files/recent",
+      "exit_code": 0,
+      "verdict": "pass -- clean refusal treated as exit 0, not an error"
+    },
+    {
+      "test": "exit code semantics -- genuine pipeline error (unreachable domain)",
+      "url": "https://this-domain-should-not-exist-xyz123abc456.invalid/",
+      "kind": "page_info",
+      "result": {
+        "success": false,
+        "status": "unreachable",
+        "notes": "vision: screenshot failed | vision: screenshot failed",
+        "attempts": [
+          {"tier": 4, "method": "vision", "model_used": "haiku", "success": false, "error": "screenshot failed"},
+          {"tier": 4, "method": "vision", "model_used": "sonnet", "success": false, "error": "screenshot failed"}
+        ]
+      },
+      "exit_code": 1,
+      "verdict": "pass -- pipeline escalated through tiers up to tier 4 vision (tried haiku then sonnet, 2 attempts total, no infinite retry loop) and then failed cleanly with a non-zero exit code, correctly distinguishing a genuine pipeline error from a policy-based refusal."
+    }
+  ],
+  "top_observations": [
+    "Guardrails are solid: blocked_robots and auth_required are both reachable via realistic URLs, are cleanly distinguishable from each other (robots-level short-circuit with 0 attempts vs. render-then-detect with 1 attempt), never fabricate data, and both correctly exit 0 (refusal) while only a genuine unreachable-host error exits 1 -- with bounded retries (2 attempts across tiers/models), not a retry loop.",
+    "No hallucination was observed anywhere in Group A: on every field the model either returned a value that matched ground truth exactly or returned null. This is the encouraging finding -- the model behaves safely, preferring null/omission over invention.",
+    "The concerning finding is the inverse failure mode: on the Anthropic pricing page, tier-1 static content extraction silently drops price text that lives inside heavily-classed Webflow div markup, causing 'success: true' with a null value for the exact field requested. The pipeline does not detect 'field explicitly asked for came back null' as a signal to escalate to tier 2 (rendered) -- it accepts tier 1 as done. This means fields/pricing extraction on JS-templated marketing sites can silently under-deliver while reporting success.",
+    "Similarly on python.org/about, page_info answered a question that was not the one asked (missed the literal hero tagline in favor of generic community/license facts) while still reporting status ok -- suggests the summarization step doesn't verify it addressed the specific --question before returning."
+  ]
+}

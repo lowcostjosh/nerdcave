@@ -50,20 +50,27 @@ def validate_jobs(data: Any) -> tuple[bool, str]:
 
 
 def validate_fields(data: Any, fields: list[str]) -> tuple[bool, str]:
+    """ALL requested fields must be present — a null field is a measured
+    failure that triggers escalation to the next tier. (If every tier
+    leaves it null, the router returns the best partial result with an
+    explicit note instead — see Router._discover.)"""
     if not isinstance(data, dict):
         return False, "not a dict"
     wanted = fields or ["answer"]
-    present = [f for f in wanted if data.get(f) not in (None, "", [], {})]
-    if not present:
-        return False, f"all requested fields empty: {wanted}"
+    empty = [f for f in wanted if data.get(f) in (None, "", [], {})]
+    if empty:
+        return False, f"fields still empty: {empty}"
     return True, ""
 
 
-def validate_page_info(data: Any) -> tuple[bool, str]:
-    if isinstance(data, dict):
-        if (data.get("summary") or "").strip() or data.get("facts"):
-            return True, ""
-    return False, "no summary or facts extracted"
+def validate_page_info(data: Any, has_question: bool = False) -> tuple[bool, str]:
+    if not isinstance(data, dict):
+        return False, "not a dict"
+    if not ((data.get("summary") or "").strip() or data.get("facts")):
+        return False, "no summary or facts extracted"
+    if has_question and data.get("answer") in (None, "", [], {}):
+        return False, "question not answered from this tier's content"
+    return True, ""
 
 
 def _validator(task: Task) -> Callable[[Any], tuple[bool, str]]:
@@ -71,7 +78,21 @@ def _validator(task: Task) -> Callable[[Any], tuple[bool, str]]:
         return validate_jobs
     if task.kind == "fields":
         return lambda d: validate_fields(d, task.fields)
-    return validate_page_info
+    return lambda d: validate_page_info(d, has_question=bool(task.question))
+
+
+def _partial_score(data: Any, task: Task) -> int:
+    """How many requested keys a failed-validation dict still filled —
+    used to keep the best partial result across tiers."""
+    if not isinstance(data, dict):
+        return 0
+    if task.kind == "fields":
+        wanted = task.fields or ["answer"]
+    elif task.kind == "page_info":
+        wanted = ["summary", "facts"] + (["answer"] if task.question else [])
+    else:
+        return 0
+    return sum(1 for f in wanted if data.get(f) not in (None, "", [], {}))
 
 
 class Router:
@@ -86,6 +107,8 @@ class Router:
         (not invalidated)."""
         result = ExtractionResult(url=url, task_kind=task.kind)
         validate = _validator(task)
+        self._task = task
+        self._best_partial: Optional[dict[str, Any]] = None
 
         recipe = self.cache.get(url, task.kind)
         if recipe is not None and min_tier and recipe.tier < min_tier and recipe.method != "auth_wall":
@@ -140,6 +163,13 @@ class Router:
             result.status = "ok"
             return data
         result.notes = (result.notes + f" | {method}: {err or why}").strip(" |")
+        # A failed-validation dict may still be the best partial answer we
+        # ever get (e.g. a field that is genuinely absent at every tier).
+        score = _partial_score(data, self._task)
+        if score > (self._best_partial or {}).get("score", 0):
+            self._best_partial = {"score": score, "data": data, "tier": tier,
+                                  "method": method, "model": model,
+                                  "reason": err or why}
         return None
 
     @staticmethod
@@ -300,6 +330,20 @@ class Router:
                 self._save_recipe(url, task, 4, "vision", {"model": model}, model)
                 return
 
+        # Every tier exhausted. If a tier produced a partial dict, return it
+        # honestly rather than nothing — flagged, and never cached as a recipe.
+        if self._best_partial is not None:
+            bp = self._best_partial
+            result.data = self._serialize(bp["data"])
+            result.tier_used = bp["tier"]
+            result.method = bp["method"]
+            result.model_used = bp["model"]
+            result.success = True
+            result.status = "ok"
+            result.notes = (f"PARTIAL after exhausting tiers: {bp['reason']} "
+                            f"(best attempt: {bp['method']}) | " + result.notes).strip(" |")
+            return
+
         result.success = False
         if result.status == "error":
             reachable = static_ok or page.ok
@@ -388,7 +432,13 @@ class Router:
 
     def _llm_from_rendered(self, page: t2.RenderedPage, url: str, task: Task,
                            model: str) -> tuple[Any, Optional[str], int]:
-        content = page.aria if len(page.aria.split()) > 50 else page.text
+        # Prefer the accessibility snapshot: it is compact AND carries
+        # semantics plain text lacks (roles, placeholders, labels). On
+        # small screens, send both — cheap, and each covers the other's
+        # blind spots.
+        content = page.aria or page.text
+        if page.aria and page.text and len(page.aria.split()) < 200:
+            content = page.aria + "\n\n[VISIBLE TEXT]\n" + page.text
         if page.load_more_clicks or page.scroll_passes:
             content = (f"[pagination expanded: {page.load_more_clicks} load-more clicks, "
                        f"{page.scroll_passes} scroll passes]\n" + content)
@@ -405,8 +455,9 @@ class Router:
             data, res = t3.extract_fields_llm(content, url, task.fields,
                                               task.question, model=model)
             return data, res.error, res.tokens_used
+        keys = ["title", "summary", "facts"] + (["answer"] if task.question else [])
         data, res = t3.extract_fields_llm(
-            content, url, ["title", "summary", "facts"],
+            content, url, keys,
             task.question or "Summarize what this page is and its key facts.",
             model=model)
         return data, res.error, res.tokens_used

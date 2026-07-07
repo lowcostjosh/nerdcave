@@ -1,0 +1,98 @@
+{
+  "group": "JS-heavy single-page apps (Tier 2 rendered-DOM stress test)",
+  "cli_invocation": "PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers .venv/bin/python -m webaccess.cli --url URL --kind fields --fields ... --no-cache",
+  "sites": [
+    {
+      "url": "https://quotes.toscrape.com/js/",
+      "why_chosen": "given test case; quote data is embedded as a JS variable inside a <script> tag, invisible to visible-text extraction, so it forces Tier 2",
+      "ground_truth": {
+        "first_quote_author": "Albert Einstein",
+        "total_quotes_on_page": 10
+      },
+      "static_shell_check": {
+        "curl_visible_words_after_script_strip": "~0 (nav/header only; quote text lives inside <script>var data=[...]</script>, stripped by visible_text())",
+        "robots_txt": "no robots.txt (404) -> unrestricted"
+      },
+      "attempts": [
+        {"tier": 1, "method": "static_trafilatura", "success": false, "error": "trafilatura path only serves plain page_info", "note": "kind=fields always skips this branch; not a JS-shell signal by itself"},
+        {"tier": 1, "method": "static_llm", "attempted": false, "reason": "skipped: looks_like_js_shell(html) == True (visible body text < 60 words after stripping <script>)"},
+        {"tier": 2, "method": "rendered_llm", "model": "haiku", "success": true, "latency_s": 7.88, "tokens_used": 24917}
+      ],
+      "final_tier": 2,
+      "model_used": "haiku",
+      "latency_s": 7.88,
+      "tokens_used": 24917,
+      "result_data": {"first_quote_author": "Albert Einstein", "total_quotes_on_page": 10},
+      "accuracy": "2/2 fields exact match",
+      "mismatch_tag": null
+    },
+    {
+      "url": "https://react-shopping-cart-67954.firebaseapp.com/",
+      "why_chosen": "create-react-app CSR shopping cart demo; raw HTML body is literally '<div id=\"root\"></div>' + noscript warning",
+      "ground_truth_method": "rendered with throwaway Playwright script (/tmp scratchpad render.py), executable_path=/opt/pw-browsers/chromium-1194/chrome-linux/chrome, proxy from HTTPS_PROXY, --ssl-version-max=tls1.2, wait_until=networkidle + 2s settle",
+      "ground_truth": {
+        "total_products": 16,
+        "first_product_name": "Cropped Stay Groovy off white",
+        "first_product_price": "$10.90"
+      },
+      "static_shell_check": {
+        "curl_visible_words_after_script_strip": 13,
+        "curl_body_text": "Typescript React Shopping cart You need to enable JavaScript to run this app.",
+        "robots_txt": "User-agent: * / Disallow: (nothing disallowed)"
+      },
+      "attempts": [
+        {"tier": 1, "method": "static_trafilatura", "success": false, "error": "trafilatura path only serves plain page_info"},
+        {"tier": 1, "method": "static_llm", "attempted": false, "reason": "skipped: looks_like_js_shell == True (13 visible words)"},
+        {"tier": 2, "method": "rendered_llm", "model": "haiku", "success": true, "latency_s": 6.93, "tokens_used": 25378}
+      ],
+      "final_tier": 2,
+      "model_used": "haiku",
+      "latency_s": 6.93,
+      "tokens_used": 25378,
+      "result_data": {"total_products": 16, "first_product_name": "Cropped Stay Groovy off white", "first_product_price": "$10.90"},
+      "accuracy": "3/3 fields exact match",
+      "mismatch_tag": null,
+      "cache_replay_test": {
+        "run_1_no_cache": {"method": "rendered_llm", "latency_s": 7.97},
+        "run_2_cached": {"method": "rendered_llm(cached)", "latency_s": 10.64, "data_unchanged": true},
+        "run_3_cached_earlier_sample": {"method": "rendered_llm(cached)", "latency_s": 11.01},
+        "observation": "method correctly suffixed '(cached)' and skipped re-discovery (only the tier-2 rendered_llm attempt appears, no failed tier-1 attempt logged), confirming discovery ladder was bypassed. However latency was NOT lower than the uncached run (7.6-8.0s uncached vs 10.6-11.0s cached, measured 3x). Root cause: for this page, discovery's only real cost is the single Tier-2 render+LLM call itself (the Tier-1 attempt that gets skipped is a microsecond no-op), so caching saves no meaningful work -- the 3-4s spread is Playwright render / Anthropic API latency noise, not a caching regression."
+      }
+    },
+    {
+      "url": "https://rickandmortyapi-react.netlify.app/",
+      "why_chosen": "create-react-app CSR landing page; raw HTML body is '<div id=\"root\"></div>' + noscript warning; not actually login-walled (no auth required to view, just a themed 'Welcome' screen with a text-only username field and a View Cards button -- no password field, so it does not trip either auth-wall heuristic)",
+      "ground_truth_method": "rendered with throwaway Playwright script, same config as above",
+      "ground_truth": {
+        "welcome_heading": "Welcome",
+        "button_label": "View Cards",
+        "username_placeholder": "Username"
+      },
+      "static_shell_check": {
+        "curl_visible_words_after_script_strip": 0,
+        "curl_body_text": "<noscript>You need to enable JavaScript to run this app.</noscript><div id=\"root\"></div>",
+        "robots_txt": "User-agent: * / Disallow: (nothing disallowed)"
+      },
+      "attempts": [
+        {"tier": 1, "method": "static_trafilatura", "success": false, "error": "trafilatura path only serves plain page_info"},
+        {"tier": 1, "method": "static_llm", "attempted": false, "reason": "skipped: looks_like_js_shell == True (0 visible words)"},
+        {"tier": 2, "method": "rendered_llm", "model": "haiku", "success": true, "latency_s": 7.15, "tokens_used": 24220}
+      ],
+      "final_tier": 2,
+      "model_used": "haiku",
+      "latency_s": 7.15,
+      "tokens_used": 24220,
+      "result_data": {"welcome_heading": "Welcome", "button_label": "View Cards", "username_placeholder": null},
+      "accuracy": "2/3 fields exact match; 1/3 field (username_placeholder) returned null instead of 'Username'",
+      "mismatch_tag": "parser_bug",
+      "root_cause_investigation": "Called webaccess.tier2_rendered.render() directly on this URL to inspect what content the LLM actually received. page.aria (accessibility snapshot) DOES contain the placeholder as the textbox's accessible name: 'textbox \"Username\"' -- full aria snapshot is only 34 words. router._llm_from_rendered() uses `content = page.aria if len(page.aria.split()) > 50 else page.text`. Because 34 < 50, it falls back to page.text, which is only 3 words ('Welcome\\nView Cards') and does NOT include the placeholder (placeholders are DOM attributes, not text nodes, so they never appear in visible innerText). The LLM therefore never saw the placeholder value and correctly returned null for a field it had no evidence for -- this is not an LLM hallucination, it is the router's word-count fallback threshold discarding the one representation (aria) that actually had the answer, on small/sparse SPA screens.",
+      "validator_note": "task still reported success=true because validate_fields only requires >=1 of the requested fields to be present/non-empty; 2 of 3 fields were present."
+    }
+  ],
+  "summary_observations": [
+    "All 3 SPA/CSR sites correctly skip the static-HTML LLM tier: looks_like_js_shell() (visible body words < 60 after stripping <script>/<style>) triggers on every one, so tier1 static_llm is never attempted, and tier2 rendered_llm succeeds on the first try (haiku) every time.",
+    "quotes.toscrape.com/js/ is a good adversarial case for JS-shell detection specifically because the data is present in the raw HTML text (inside a <script> tag) but not as visible text -- confirming the shell detector is checking rendered visibility, not raw byte presence.",
+    "Found one real parser bug: router._llm_from_rendered()'s `len(page.aria.split()) > 50` threshold silently drops the accessibility-tree snapshot in favor of plain innerText on short/sparse pages, even when the aria snapshot contains information (e.g. input placeholders exposed as accessible names) that plain text never carries. Reproduced on rickandmortyapi-react.netlify.app (aria=34 words, text=3 words); the missing 'username_placeholder' field is a direct consequence, not an LLM hallucination.",
+    "Cache replay works correctly (method suffixed '(cached)', discovery ladder skipped, identical data returned) but for pages that already succeed on the very first Tier-2 attempt, caching provides no measurable latency win: 3 measurements averaged ~7.9s uncached vs ~10.8s cached, i.e. slower on average, purely due to Playwright render / Anthropic API call-latency noise dominating the (already tiny) discovery overhead being saved."
+  ]
+}
