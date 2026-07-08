@@ -109,6 +109,7 @@ class Router:
         validate = _validator(task)
         self._task = task
         self._best_partial: Optional[dict[str, Any]] = None
+        self._pending_note: Optional[str] = None
 
         recipe = self.cache.get(url, task.kind)
         if recipe is not None and min_tier and recipe.tier < min_tier and recipe.method != "auth_wall":
@@ -145,6 +146,7 @@ class Router:
                  model: Optional[str] = None) -> Optional[Any]:
         """Run one attempt; on validated success record it on the result and
         return the data, else log the failure and return None."""
+        self._pending_note = None
         with Timer() as timer:
             try:
                 data, err, tokens = fn()
@@ -161,6 +163,8 @@ class Router:
             result.model_used = model
             result.success = True
             result.status = "ok"
+            if self._pending_note:
+                result.notes = (result.notes + f" | {self._pending_note}").strip(" |")
             return data
         result.notes = (result.notes + f" | {method}: {err or why}").strip(" |")
         # A failed-validation dict may still be the best partial answer we
@@ -468,6 +472,8 @@ class Router:
             return None, "no content to interpret", 0
         if task.kind == "jobs":
             jobs, res = t3.extract_jobs_llm(content, url, model=model)
+            if res.note:
+                self._pending_note = res.note
             return jobs, res.error, res.tokens_used
         if task.kind == "fields":
             data, res = t3.extract_fields_llm(content, url, task.fields,

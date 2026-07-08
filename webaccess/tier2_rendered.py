@@ -129,8 +129,13 @@ def render(url: str, *, wait_selector: Optional[str] = None,
 def _expand(page, result: RenderedPage) -> None:
     """Bounded 'load more' clicks, then bounded scroll-to-bottom passes."""
     import re as _re
+    name_re = _re.compile(LOAD_MORE_RE, _re.I)
     for _ in range(MAX_LOAD_MORE_CLICKS):
-        btn = page.get_by_role("button", name=_re.compile(LOAD_MORE_RE, _re.I))
+        # "Load more" is often a link (role=link) styled as a button, not an
+        # actual <button>; try both, capped by the same click budget.
+        btn = page.get_by_role("button", name=name_re)
+        if btn.count() == 0:
+            btn = page.get_by_role("link", name=name_re)
         try:
             if btn.count() == 0 or not btn.first.is_visible():
                 break

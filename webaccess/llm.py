@@ -15,7 +15,9 @@ from typing import Optional
 
 HAIKU = "haiku"
 SONNET = "sonnet"
-DEFAULT_TIMEOUT_S = 180
+# A single 275-posting board measured at 157s; raised from 180 so bigger
+# boards (and chunked passes) don't clip mid-extraction.
+DEFAULT_TIMEOUT_S = 240
 
 
 @dataclass
@@ -25,6 +27,7 @@ class LLMResult:
     tokens_used: int  # input + output as reported by the CLI
     ok: bool
     error: Optional[str] = None
+    note: Optional[str] = None  # non-error commentary (e.g. chunk counts)
 
 
 def call_llm(prompt: str, *, model: str = HAIKU, allow_read_paths: bool = False,

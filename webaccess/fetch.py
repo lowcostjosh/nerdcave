@@ -55,7 +55,11 @@ class PoliteFetcher:
             except Exception:
                 rp.parse([])
             self._robots[host] = rp
-        return rp.can_fetch(USER_AGENT, url) and rp.can_fetch("*", url)
+        # Standard precedence: our specific UA's ruling wins. urllib's parser
+        # already falls back to the wildcard (*) group when no group matches
+        # our agent, so a separate can_fetch("*") AND-check would wrongly let
+        # a broad Disallow: * override a UA-specific allowance.
+        return rp.can_fetch(USER_AGENT, url)
 
     def _rate_limit(self, url: str) -> None:
         host = urlparse(url).netloc
