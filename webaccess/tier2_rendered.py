@@ -60,13 +60,23 @@ def _new_page(browser):
 
 
 def _detect_auth_wall(page) -> bool:
-    for marker in ("iframe[src*='recaptcha']", "iframe[src*='hcaptcha']",
-                   "iframe[src*='turnstile']", "#px-captcha"):
-        if page.locator(marker).count() > 0:
-            return True
-    if page.locator("input[type='password']").count() > 0:
+    """Mirror of tier1_static.looks_like_auth_wall for the rendered DOM: a
+    captcha iframe alone must NOT trip on a rich page (sites embed reCAPTCHA
+    in ordinary forms). Require a sparse page or explicit challenge text."""
+    from .tier1_static import CHALLENGE_RE, SPARSE_WORDS
+    try:
         body = page.locator("body").inner_text(timeout=5000)
-        if len(body.split()) < 200:
+    except Exception:
+        body = ""
+    if CHALLENGE_RE.search(body):
+        return True
+    sparse = len(body.split()) < SPARSE_WORDS
+    if sparse:
+        for marker in ("iframe[src*='recaptcha']", "iframe[src*='hcaptcha']",
+                       "iframe[src*='turnstile']", "#px-captcha"):
+            if page.locator(marker).count() > 0:
+                return True
+        if page.locator("input[type='password']").count() > 0:
             return True
     return False
 

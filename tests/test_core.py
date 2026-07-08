@@ -6,11 +6,20 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import pytest
 
 from webaccess.cache import Recipe, SiteProfileCache
+from webaccess.fetch import FetchResponse
 from webaccess.llm import extract_json
 from webaccess.router import validate_fields, validate_jobs, validate_page_info
 from webaccess.tier0_structured import detect_ats, extract_jsonld_jobs
-from webaccess.tier1_static import looks_like_js_shell
+from webaccess.tier1_static import looks_like_auth_wall, looks_like_js_shell
 from webaccess.types import JobPosting
+
+
+def _resp(text, status=200):
+    return FetchResponse(url="https://x.example.com", status_code=status,
+                         text=text, headers={}, ok=status < 400)
+
+
+_RICH = " ".join(f"content{i}" for i in range(400))
 
 
 # --- ATS detection ---------------------------------------------------------
@@ -34,6 +43,61 @@ def test_detect_ats_embed():
 
 def test_detect_ats_embed_ignores_reserved_words():
     assert detect_ats("https://x.example.com", "see boards.greenhouse.io/embed") is None
+
+
+# --- P0-2: ATS embed-token crosstalk ---------------------------------------
+
+def test_detect_ats_blog_link_does_not_crosstalk():
+    # A blog on someblog.com merely LINKS Palantir's lever board once.
+    # Weak evidence: token != domain slug, single occurrence -> must NOT
+    # return palantir (would otherwise serve Palantir's jobs as this site's).
+    html = '<article>Cool company: <a href="https://jobs.lever.co/palantir">careers</a></article>'
+    assert detect_ats("https://someblog.example.com/post", html) is None
+
+
+def test_detect_ats_strong_embed_still_detected():
+    # A real Lever apply/postings embed carries the API endpoint -> strong.
+    html = '<script>fetch("https://api.lever.co/v0/postings/realco?mode=json")</script>'
+    assert detect_ats("https://realco.example.com/careers", html) == ("lever", "realco")
+    gh = '<div id="grnhse_app"></div><script>Grnhse.Iframe.load({ for: "widgetco" });</script>'
+    assert detect_ats("https://widgetco.example.com/jobs", gh) == ("greenhouse", "widgetco")
+
+
+def test_detect_ats_slug_match_link_accepted():
+    # stripe.com linking boards.greenhouse.io/stripe: token == domain slug,
+    # so it is self-referential and trustworthy (no network needed).
+    html = '<a href="https://boards.greenhouse.io/stripe">Open roles</a>'
+    assert detect_ats("https://stripe.com/jobs", html) == ("greenhouse", "stripe")
+
+
+# --- P0-1: CAPTCHA false positive ------------------------------------------
+
+def test_auth_wall_rich_page_with_recaptcha_is_not_a_wall():
+    html = f'<html><body><p>{_RICH}</p>' \
+           '<script src="https://www.google.com/recaptcha/api.js"></script></body></html>'
+    assert looks_like_auth_wall(_resp(html, status=200)) is False
+
+
+def test_auth_wall_sparse_cloudflare_challenge_is_a_wall():
+    html = '<html><body><h1>Just a moment...</h1>' \
+           '<p>Checking your browser before accessing the site.</p></body></html>'
+    assert looks_like_auth_wall(_resp(html, status=200)) is True
+
+
+def test_auth_wall_403_is_a_wall():
+    assert looks_like_auth_wall(_resp("<html><body>nope</body></html>", status=403)) is True
+
+
+def test_auth_wall_password_form_sparse_is_a_wall():
+    html = '<html><body><form><input type="password"></form>Sign in</body></html>'
+    assert looks_like_auth_wall(_resp(html, status=200)) is True
+
+
+def test_auth_wall_password_form_on_rich_page_is_not_a_wall():
+    # A newsletter/login box in the footer of a long article must pass.
+    html = f'<html><body><article>{_RICH}</article>' \
+           '<footer><form><input type="password">Sign in</form></footer></body></html>'
+    assert looks_like_auth_wall(_resp(html, status=200)) is False
 
 
 # --- JSON-LD ----------------------------------------------------------------

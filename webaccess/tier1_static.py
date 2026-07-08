@@ -14,12 +14,21 @@ from selectolax.parser import HTMLParser
 
 from .fetch import FETCHER, FetchResponse
 
+# Login / paywall phrasing. Rich content pages routinely carry "sign in"
+# in a nav or footer, so these only signal a wall on a non-200 response.
 AUTH_WALL_RE = re.compile(
     r"(sign in to continue|log ?in to (?:view|continue|see)|create an account to"
-    r"|session expired|authentication required|checking your browser|verify you are"
-    r" ?(?:a )?human|captcha|cf-challenge|access denied)", re.I)
+    r"|session expired|authentication required|access denied)", re.I)
+# Bot-challenge / interstitial phrasing. A challenge page IS a wall
+# regardless of status code (Cloudflare serves these as 200/403/503).
+CHALLENGE_RE = re.compile(
+    r"(checking your browser|just a moment\.?\.?\.?|verify you are ?(?:a )?human"
+    r"|attention required|cf-chl|__cf_chl|px-captcha|datadome)", re.I)
 CAPTCHA_MARKERS = ("recaptcha", "hcaptcha", "cf-turnstile", "captcha-delivery",
                    "px-captcha", "datadome")
+# A page with fewer visible words than this is "sparse" — a plausible
+# challenge/login interstitial rather than real content.
+SPARSE_WORDS = 200
 
 
 def get_static(url: str) -> FetchResponse:
@@ -27,18 +36,29 @@ def get_static(url: str) -> FetchResponse:
 
 
 def looks_like_auth_wall(resp: FetchResponse) -> bool:
+    """True only for genuine walls. A captcha *widget* embedded in a form on
+    an otherwise rich content page is NOT a wall — only sparse challenge
+    interstitials and login-only pages are."""
     if resp.status_code in (401, 403, 407):
         return True
-    head = resp.text[:20000].lower()
-    if any(m in head for m in CAPTCHA_MARKERS):
+    text = resp.text or ""
+    head = text[:20000].lower()
+    # An explicit bot-challenge interstitial is always a wall.
+    if CHALLENGE_RE.search(head):
         return True
-    # login-only pages: a password field and almost no other content
-    tree = HTMLParser(resp.text)
-    if tree.css_first('input[type="password"]') is not None:
-        body_text = (tree.body.text(separator=" ") if tree.body else "")
-        if len(body_text.split()) < 200:
-            return True
-    return bool(AUTH_WALL_RE.search(head)) and resp.status_code != 200 or False
+    sparse = len(visible_text(text).split()) < SPARSE_WORDS
+    # A captcha widget only signals a wall on a sparse page; a content-rich
+    # page that merely embeds reCAPTCHA in a contact/login form passes.
+    if sparse and any(m in head for m in CAPTCHA_MARKERS):
+        return True
+    # Login-only page: a password field with almost no other content.
+    tree = HTMLParser(text)
+    if sparse and tree.css_first('input[type="password"]') is not None:
+        return True
+    # Generic login/paywall phrasing counts only on a non-200 response.
+    if resp.status_code != 200 and AUTH_WALL_RE.search(head):
+        return True
+    return False
 
 
 def visible_text(html: str) -> str:

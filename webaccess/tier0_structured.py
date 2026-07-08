@@ -24,28 +24,81 @@ ATS_URL_PATTERNS = [
     ("ashby", re.compile(r"jobs\.ashbyhq\.com/([A-Za-z0-9_.-]+)")),
 ]
 
-# Patterns that betray an embedded ATS inside a custom careers page.
-ATS_EMBED_PATTERNS = [
-    ("greenhouse", re.compile(r"(?:boards|job-boards)\.(?:eu\.)?greenhouse\.io/(?:embed/job_board\?(?:[^\"'\s]*&)?for=)?([A-Za-z0-9_-]+)")),
-    ("greenhouse", re.compile(r"grnhse\.Iframe|grnh\.se")),
-    ("lever", re.compile(r"(?:jobs|api)\.(?:eu\.)?lever\.co/(?:v0/postings/)?([A-Za-z0-9_-]+)")),
-    ("ashby", re.compile(r"(?:jobs|api)\.ashbyhq\.com/(?:posting-api/job-board/)?([A-Za-z0-9_.-]+)")),
+# STRONG embed evidence: the page actually hosts/mounts the ATS's own
+# board or apply widget for a specific token. Trustworthy on its own —
+# a blog can *link* an ATS board, but it does not embed the widget config.
+ATS_STRONG_PATTERNS = [
+    ("greenhouse", re.compile(r"(?:boards|job-boards)\.(?:eu\.)?greenhouse\.io/embed/job_(?:board|app)\?(?:[^\"'\s]*&)?for=([A-Za-z0-9_-]+)")),
+    ("greenhouse", re.compile(r"(?:grnhse|Grnhse)\.Iframe[\s\S]{0,300}?for\s*:\s*['\"]([A-Za-z0-9_-]+)['\"]")),
+    ("lever", re.compile(r"api\.(?:eu\.)?lever\.co/v0/postings/([A-Za-z0-9_-]+)")),
+    ("ashby", re.compile(r"api\.ashbyhq\.com/posting-api/job-board/([A-Za-z0-9_.-]+)")),
 ]
+
+# WEAK evidence: a mere hyperlink to an ATS board. Any page linking a
+# company's board matches this, so a bare match is NOT accepted — it must
+# pass the domain-slug or title cross-check in detect_ats.
+ATS_WEAK_PATTERNS = [
+    ("greenhouse", re.compile(r"(?:boards|job-boards)\.(?:eu\.)?greenhouse\.io/([A-Za-z0-9_-]+)")),
+    ("lever", re.compile(r"jobs\.(?:eu\.)?lever\.co/([A-Za-z0-9_-]+)")),
+    ("ashby", re.compile(r"jobs\.ashbyhq\.com/([A-Za-z0-9_.-]+)")),
+]
+
+_RESERVED_TOKENS = {"embed", "job_board", "job_app", "v0", "postings",
+                    "posting-api", "www"}
+
+
+def _domain_slug(url: str) -> str:
+    parts = urlparse(url).netloc.lower().split(".")
+    return parts[-2] if len(parts) >= 2 else (parts[0] if parts else "")
+
+
+def _titles_confirm(jobs: list[JobPosting], html: str, need: int = 2) -> bool:
+    """A slug collision can't survive this: several of the fetched board's
+    own job titles must appear verbatim in the page HTML."""
+    return sum(1 for j in jobs[:40] if len(j.title) > 8 and j.title in html) >= need
 
 
 def detect_ats(url: str, html: Optional[str] = None) -> Optional[tuple[str, str]]:
-    """Return (platform, board_token) if this URL or page is ATS-hosted."""
+    """Return (platform, board_token) if this URL or page is ATS-backed.
+
+    Confidence-tiered so a page that merely *links* another company's board
+    (e.g. a blog citing Palantir's careers) never yields that company's data:
+      - URL hosted on the ATS -> accept.
+      - STRONG embed (widget config for a token) -> accept.
+      - WEAK link -> accept only if the token is this domain's own slug, or
+        the same token is linked >=2x AND the board's titles appear verbatim.
+    """
     for platform, pat in ATS_URL_PATTERNS:
         m = pat.search(url)
         if m:
             return platform, m.group(1)
-    if html:
-        for platform, pat in ATS_EMBED_PATTERNS:
-            m = pat.search(html)
-            if m and m.groups() and m.group(1):
-                token = m.group(1)
-                if token.lower() not in {"embed", "job_board", "v0", "postings"}:
-                    return platform, token
+    if not html:
+        return None
+
+    for platform, pat in ATS_STRONG_PATTERNS:
+        m = pat.search(html)
+        if m and m.group(1) and m.group(1).lower() not in _RESERVED_TOKENS:
+            return platform, m.group(1)
+
+    slug = _domain_slug(url)
+    for platform, pat in ATS_WEAK_PATTERNS:
+        tokens = [m.group(1) for m in pat.finditer(html)
+                  if m.group(1).lower() not in _RESERVED_TOKENS]
+        if not tokens:
+            continue
+        # (a) token equals the page's own domain slug -> self-referential,
+        # trustworthy without a network round-trip.
+        for t in tokens:
+            if t.lower() == slug:
+                return platform, t
+        # (b) same token linked repeatedly AND the board's titles are on the
+        # page -> the page really is this board's front end.
+        from collections import Counter
+        for t, n in Counter(tokens).most_common():
+            if n >= 2:
+                jobs = ATS_FETCHERS[platform](t)
+                if len(jobs) >= 2 and _titles_confirm(jobs, html):
+                    return platform, t
     return None
 
 
@@ -234,9 +287,7 @@ def probe_ats_by_slug(url: str, html: str) -> Optional[tuple[str, str, list[JobP
     page HTML — so a slug collision with another company can't return the
     wrong board.
     """
-    host = urlparse(url).netloc
-    parts = host.split(".")
-    slug = parts[-2] if len(parts) >= 2 else parts[0]
+    slug = _domain_slug(url)
     if not slug or slug in ("www", "jobs", "careers"):
         return None
     # Markers make a platform the first candidate, but their absence
@@ -248,7 +299,6 @@ def probe_ats_by_slug(url: str, html: str) -> Optional[tuple[str, str, list[JobP
         jobs = ATS_FETCHERS[platform](slug)
         if len(jobs) < 2:
             continue
-        confirmed = sum(1 for j in jobs[:40] if len(j.title) > 8 and j.title in html)
-        if confirmed >= 2:
+        if _titles_confirm(jobs, html):
             return platform, slug, jobs
     return None
