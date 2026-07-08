@@ -215,3 +215,40 @@ def find_feeds(html: str, base_url: str) -> list[str]:
         if href:
             feeds.append(href if href.startswith("http") else base_url.rstrip("/") + "/" + href.lstrip("/"))
     return feeds
+
+
+# --- slug probe: custom career pages backed by an ATS ----------------------
+
+ATS_MARKERS = {
+    "greenhouse": re.compile(r"gh_jid|gh_src|greenhouse", re.I),
+    "lever": re.compile(r"lever\.co|lever-", re.I),
+    "ashby": re.compile(r"ashbyhq|ashby_jid", re.I),
+}
+
+
+def probe_ats_by_slug(url: str, html: str) -> Optional[tuple[str, str, list[JobPosting]]]:
+    """Custom careers pages often front an ATS whose board token is just
+    the company's domain slug (stripe.com -> greenhouse board 'stripe').
+    Only probes when the page itself carries that ATS's markers, and only
+    accepts the result when several API job titles literally appear in the
+    page HTML — so a slug collision with another company can't return the
+    wrong board.
+    """
+    host = urlparse(url).netloc
+    parts = host.split(".")
+    slug = parts[-2] if len(parts) >= 2 else parts[0]
+    if not slug or slug in ("www", "jobs", "careers"):
+        return None
+    # Markers make a platform the first candidate, but their absence
+    # doesn't veto the probe: e.g. stripe.com's *static* HTML carries no
+    # greenhouse strings at all, yet dozens of its greenhouse-API job
+    # titles appear verbatim in it. The title cross-check is the gate.
+    ordered = sorted(ATS_FETCHERS, key=lambda p: 0 if ATS_MARKERS[p].search(html) else 1)
+    for platform in ordered:
+        jobs = ATS_FETCHERS[platform](slug)
+        if len(jobs) < 2:
+            continue
+        confirmed = sum(1 for j in jobs[:40] if len(j.title) > 8 and j.title in html)
+        if confirmed >= 2:
+            return platform, slug, jobs
+    return None

@@ -268,6 +268,13 @@ class Router:
                     self._save_recipe(url, task, 0, "ats_api",
                                       {"platform": ats[0], "token": ats[1]})
                     return
+                probe = t0.probe_ats_by_slug(url, html)
+                if probe and self._attempt(result, 0, f"ats_slug_probe:{probe[0]}",
+                                           lambda: (probe[2], None, 0),
+                                           validate) is not None:
+                    self._save_recipe(url, task, 0, "ats_api",
+                                      {"platform": probe[0], "token": probe[1]})
+                    return
                 if self._attempt(result, 0, "jsonld_static",
                                  lambda: self._run_jsonld_static(url),
                                  validate) is not None:
@@ -308,6 +315,13 @@ class Router:
                                          validate) is not None:
                     self._save_recipe(url, task, 0, "ats_api",
                                       {"platform": ats[0], "token": ats[1]})
+                    return
+                probe = t0.probe_ats_by_slug(url, page.html)
+                if probe and self._attempt(result, 0, f"ats_slug_probe:{probe[0]}",
+                                           lambda: (probe[2], None, 0),
+                                           validate) is not None:
+                    self._save_recipe(url, task, 0, "ats_api",
+                                      {"platform": probe[0], "token": probe[1]})
                     return
             if task.kind == "jobs":
                 if self._attempt(result, 2, "jsonld_rendered",

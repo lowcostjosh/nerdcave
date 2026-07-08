@@ -1,0 +1,25 @@
+
+gitlab (greenhouse), API total=145
+  default: tier 0 ats_api:greenhouse -> 145 jobs, 0.6s, 0 tokens, exact=True
+  page:    tier 1 static_llm model=haiku -> 49 jobs (recall 0.338), 83.7s, 34475 tok
+  fields:  title 10/10, location 4/10, company 0/10, url 0/10, date_posted 0/10  (unmatched 0/10)
+
+stripe (greenhouse), API total=493
+  default: tier 2 rendered_llm -> 100 jobs, 261.0s, 50211 tokens, exact=False
+  page:    tier 2 rendered_llm model=haiku -> 100 jobs (recall 0.203), 485.4s, 56907 tok
+  fields:  title 10/10, location 3/10, company 10/10, url 0/10, date_posted 0/10  (unmatched 0/10)
+
+anthropic (greenhouse), API total=395
+  default: tier 0 ats_api:greenhouse -> 395 jobs, 1.8s, 0 tokens, exact=True
+  page:    tier 1 static_llm model=haiku -> 46 jobs (recall 0.116), 97.6s, 36374 tok
+  fields:  title 10/10, location 8/10, company 0/10, url 0/10, date_posted 0/10  (unmatched 0/10)
+
+palantir (lever), API total=275
+  default: tier 0 ats_api:lever -> 275 jobs, 2.7s, 0 tokens, exact=True
+  page:    tier 1 static_llm model=haiku -> 275 jobs (recall 1.0), 156.9s, 51493 tok
+  fields:  title 10/10, location 10/10, company 10/10, url 0/10, date_posted 0/10, department 10/10  (unmatched 0/10)
+
+wealthfront (lever), API total=14
+  default: tier 0 ats_api:lever -> 14 jobs, 1.8s, 0 tokens, exact=True
+  page:    tier 1 static_llm model=haiku -> 14 jobs (recall 1.0), 96.6s, 29714 tok
+  fields:  title 10/10, location 10/10, company 0/10, url 0/10, date_posted 0/10, department 10/10  (unmatched 0/10)

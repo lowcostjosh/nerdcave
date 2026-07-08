@@ -116,32 +116,17 @@
       "stale_reason": null
     }
   },
-  "stripe.com": {
+  "stripe.com": {},
+  "jobs.lever.co/palantir": {
     "jobs": {
-      "tier": 2,
-      "method": "rendered_llm",
+      "tier": 1,
+      "method": "static_llm",
       "params": {
         "model": "haiku"
       },
       "model": "haiku",
-      "created_at": 1783439250.197088,
-      "last_verified": 1783439250.1970892,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "jobs.lever.co/palantir": {
-    "jobs": {
-      "tier": 0,
-      "method": "ats_api",
-      "params": {
-        "platform": "lever",
-        "token": "palantir"
-      },
-      "model": null,
-      "created_at": 1783439264.651104,
-      "last_verified": 1783439264.6511047,
+      "created_at": 1783470192.9216013,
+      "last_verified": 1783470192.9216022,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -149,30 +134,14 @@
   },
   "jobs.lever.co/wealthfront": {
     "jobs": {
-      "tier": 0,
-      "method": "ats_api",
-      "params": {
-        "platform": "lever",
-        "token": "wealthfront"
-      },
-      "model": null,
-      "created_at": 1783439267.1928723,
-      "last_verified": 1783439267.1928725,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "jobs.apple.com": {
-    "jobs": {
-      "tier": 2,
-      "method": "rendered_llm",
+      "tier": 1,
+      "method": "static_llm",
       "params": {
         "model": "haiku"
       },
       "model": "haiku",
-      "created_at": 1783439642.2805154,
-      "last_verified": 1783439642.280516,
+      "created_at": 1783470291.5061028,
+      "last_verified": 1783470291.506104,
       "hits": 0,
       "stale": false,
       "stale_reason": null

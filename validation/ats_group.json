@@ -1,0 +1,410 @@
+[
+  {
+    "site": "gitlab",
+    "platform": "greenhouse",
+    "default_run": {
+      "tier_used": 0,
+      "method": "ats_api:greenhouse",
+      "model_used": null,
+      "latency_s": 0.5930476049999811,
+      "tokens_used": 0,
+      "success": true,
+      "count": 145
+    },
+    "page_run": {
+      "tier_used": 1,
+      "method": "static_llm",
+      "model_used": "haiku",
+      "latency_s": 83.73841688699997,
+      "tokens_used": 34475,
+      "success": true,
+      "status": "ok",
+      "count": 49
+    },
+    "ground_truth_count": 145,
+    "recall_page_run": 0.338,
+    "default_matches_api_exactly": true,
+    "sample_size": 10,
+    "unmatched_in_sample": 0,
+    "field_accuracy": {
+      "title": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "location": {
+        "correct": 4,
+        "wrong": 0,
+        "missing": 6,
+        "api_null": 0
+      },
+      "company": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "url": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "date_posted": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "salary": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 10
+      },
+      "department": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 10
+      }
+    },
+    "mismatch_examples": []
+  },
+  {
+    "site": "stripe",
+    "platform": "greenhouse",
+    "default_run": {
+      "tier_used": 2,
+      "method": "rendered_llm",
+      "model_used": "haiku",
+      "latency_s": 261.02605086300014,
+      "tokens_used": 50211,
+      "success": true,
+      "count": 100
+    },
+    "page_run": {
+      "tier_used": 2,
+      "method": "rendered_llm",
+      "model_used": "haiku",
+      "latency_s": 485.3884510239999,
+      "tokens_used": 56907,
+      "success": true,
+      "status": "ok",
+      "count": 100
+    },
+    "ground_truth_count": 493,
+    "recall_page_run": 0.203,
+    "default_matches_api_exactly": false,
+    "sample_size": 10,
+    "unmatched_in_sample": 0,
+    "field_accuracy": {
+      "title": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "location": {
+        "correct": 3,
+        "wrong": 7,
+        "missing": 0,
+        "api_null": 0
+      },
+      "company": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "url": {
+        "correct": 0,
+        "wrong": 10,
+        "missing": 0,
+        "api_null": 0
+      },
+      "date_posted": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "salary": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 10
+      },
+      "department": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 10
+      }
+    },
+    "mismatch_examples": [
+      {
+        "cause": "field_mismatch",
+        "field": "location",
+        "extracted": "South San Francisco HQ",
+        "api": "US-Remote, US-San Francisco, US-Chicago, US-New York, US-Seattle, US-Texas",
+        "title": "Account Executive - Enterprise, Grower"
+      },
+      {
+        "cause": "field_mismatch",
+        "field": "url",
+        "extracted": "https://stripe.com/jobs/listing/account-executive-enterprise-grower/7993151",
+        "api": "https://stripe.com/jobs/search?gh_jid=7993151",
+        "title": "Account Executive - Enterprise, Grower"
+      },
+      {
+        "cause": "field_mismatch",
+        "field": "location",
+        "extracted": "Remote in United States",
+        "api": "US-Remote, US-San Francisco, US-Chicago, US-New York, US-Seattle, US-Texas",
+        "title": "Account Executive - Enterprise, Grower"
+      },
+      {
+        "cause": "field_mismatch",
+        "field": "url",
+        "extracted": "https://stripe.com/jobs/listing/account-executive-enterprise-grower/7993151",
+        "api": "https://stripe.com/jobs/search?gh_jid=7993151",
+        "title": "Account Executive - Enterprise, Grower"
+      },
+      {
+        "cause": "field_mismatch",
+        "field": "location",
+        "extracted": "South San Francisco HQ",
+        "api": "US-San Francisco, US-California",
+        "title": "Account Executive - Enterprise, Growth"
+      },
+      {
+        "cause": "field_mismatch",
+        "field": "url",
+        "extracted": "https://stripe.com/jobs/listing/account-executive-enterprise-growth/7997146",
+        "api": "https://stripe.com/jobs/search?gh_jid=7997146",
+        "title": "Account Executive - Enterprise, Growth"
+      }
+    ]
+  },
+  {
+    "site": "anthropic",
+    "platform": "greenhouse",
+    "default_run": {
+      "tier_used": 0,
+      "method": "ats_api:greenhouse",
+      "model_used": null,
+      "latency_s": 1.793111591000013,
+      "tokens_used": 0,
+      "success": true,
+      "count": 395
+    },
+    "page_run": {
+      "tier_used": 1,
+      "method": "static_llm",
+      "model_used": "haiku",
+      "latency_s": 97.57643912599997,
+      "tokens_used": 36374,
+      "success": true,
+      "status": "ok",
+      "count": 46
+    },
+    "ground_truth_count": 395,
+    "recall_page_run": 0.116,
+    "default_matches_api_exactly": true,
+    "sample_size": 10,
+    "unmatched_in_sample": 0,
+    "field_accuracy": {
+      "title": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "location": {
+        "correct": 8,
+        "wrong": 0,
+        "missing": 2,
+        "api_null": 0
+      },
+      "company": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "url": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "date_posted": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "salary": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 10
+      },
+      "department": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 10
+      }
+    },
+    "mismatch_examples": []
+  },
+  {
+    "site": "palantir",
+    "platform": "lever",
+    "default_run": {
+      "tier_used": 0,
+      "method": "ats_api:lever",
+      "model_used": null,
+      "latency_s": 2.7489475630000015,
+      "tokens_used": 0,
+      "success": true,
+      "count": 275
+    },
+    "page_run": {
+      "tier_used": 1,
+      "method": "static_llm",
+      "model_used": "haiku",
+      "latency_s": 156.931595584,
+      "tokens_used": 51493,
+      "success": true,
+      "status": "ok",
+      "count": 275
+    },
+    "ground_truth_count": 275,
+    "recall_page_run": 1.0,
+    "default_matches_api_exactly": true,
+    "sample_size": 10,
+    "unmatched_in_sample": 0,
+    "field_accuracy": {
+      "title": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "location": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "company": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "url": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "date_posted": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "salary": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 10
+      },
+      "department": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      }
+    },
+    "mismatch_examples": []
+  },
+  {
+    "site": "wealthfront",
+    "platform": "lever",
+    "default_run": {
+      "tier_used": 0,
+      "method": "ats_api:lever",
+      "model_used": null,
+      "latency_s": 1.7955491860000166,
+      "tokens_used": 0,
+      "success": true,
+      "count": 14
+    },
+    "page_run": {
+      "tier_used": 1,
+      "method": "static_llm",
+      "model_used": "haiku",
+      "latency_s": 96.57148936000002,
+      "tokens_used": 29714,
+      "success": true,
+      "status": "ok",
+      "count": 14
+    },
+    "ground_truth_count": 14,
+    "recall_page_run": 1.0,
+    "default_matches_api_exactly": true,
+    "sample_size": 10,
+    "unmatched_in_sample": 0,
+    "field_accuracy": {
+      "title": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "location": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      },
+      "company": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "url": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "date_posted": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 10,
+        "api_null": 0
+      },
+      "salary": {
+        "correct": 0,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 10
+      },
+      "department": {
+        "correct": 10,
+        "wrong": 0,
+        "missing": 0,
+        "api_null": 0
+      }
+    },
+    "mismatch_examples": []
+  }
+]

@@ -18,7 +18,10 @@ Given (url, task):
 │
 ├─ TIER 0 — data the site already publishes, structured
 │     ATS job APIs: Greenhouse / Lever / Ashby (public, no auth),
-│     detected from the URL or from embeds inside custom careers pages;
+│     detected from the URL, from embeds inside custom careers pages,
+│     or by the slug probe (try the domain slug against each ATS API;
+│     accept only if several returned titles appear verbatim in the
+│     page HTML — stripe.com/jobs resolves to all 496 postings this way);
 │     schema.org JSON-LD; RSS/Atom; sitemap.xml; llms.txt.
 │     Free, complete, exact. ALWAYS checked first.
 │
@@ -98,7 +101,7 @@ returned null rather than inventing it.
 
 | Group | Sites | Outcome |
 |---|---|---|
-| Greenhouse/Lever (Tier 0 + forced page-extraction diff vs API) | pending | pending |
+| Greenhouse/Lever, API ground truth (GitLab, Stripe, Anthropic / Palantir, Wealthfront) | 5 | Default runs: 4/5 Tier 0, **exact match with the API** (145, 395, 275, 14 postings; 0.6–2.7s; 0 tokens). Stripe via its custom `stripe.com/jobs/search` initially fell to Tier 2 (100/493 jobs, 261s, 50k tokens) → prompted the **ATS slug probe** (domain slug tried against ATS APIs, accepted only when several API titles appear verbatim in the page HTML): now Tier 0, 496/496, 0 tokens. Forced page-extraction (haiku): titles 10/10 on every site; Lever recall 1.0 (fully server-rendered); Greenhouse static recall 0.12–0.34 (JS pagination — the measured reason Tier 0 must win); zero invented values — company/url/date nulls were fields the pages genuinely don't display; Stripe's location/url "mismatches" are page-vs-API representation differences, not extraction errors |
 | Custom careers, no ATS API (Apple, Amazon, Airbnb; Netflix/Microsoft screened out as Eightfold-hosted) | 3 | Apple: Tier 2/haiku, 20/20 page-1 postings field-perfect after fixes (was 2/19 — under-extraction bug found by this validation and fixed). Airbnb: Tier 2/haiku, 10/10 postings, 5/5 field-checked correct. Amazon: full ladder to Tier 4/vision, 6 postings field-correct but partial recall (6 of 500+, page-1-only) — the one legitimate vision case found, and the weakest result; recall at LLM tiers is the known limitation vs exact API tiers |
 | JS-heavy SPAs (quotes.toscrape JS, React shopping cart, R&M React app) | 3 | All: static tiers correctly skipped (JS-shell detection), resolved Tier 2/haiku, 6–8s, ~25k tokens. Field accuracy 8/8 after the aria-preference fix (7/8 before — placeholder lived only in the a11y snapshot). Cache replay confirmed (`rendered_llm(cached)`) |
 | General pages (python.org about, Anthropic pricing, EFF contact) | 3 | All Tier 1/haiku, 9–17s, ~25k tokens. EFF contact 6/6 fields; python.org 3/3 fields; Anthropic pricing initially returned null price at Tier 1 with success=true — fixed: null requested fields now escalate (retest: Tier 2/haiku, `Pro / $17` correct) |
@@ -107,7 +110,29 @@ returned null rather than inventing it.
 Bugs found by validation and fixed in the same session: per-tenant cache
 keys (two companies on one ATS host would have shared a recipe), partial
 field results not escalating, aria snapshot discarded on small pages,
-list under-extraction at LLM tiers, prose-wrapped JSON parsing.
+list under-extraction at LLM tiers, prose-wrapped JSON parsing, ATS slug
+probe missing marker-less custom pages.
+
+## Known limitations (documented, not hidden)
+
+- **Recall at LLM tiers on large paginated boards.** Static Tier 1 sees
+  page 1 (+ up to 4 rel-next follows); Tier 2's load-more/scroll expansion
+  is bounded. Amazon (500+ jobs) returned page-1-only with the truncation
+  noted in the result. Tier 0 is the fix — that's the point of the ladder,
+  the slug probe, and the recipe cache. If Tier 0 doesn't exist, expect
+  page-sized recall and read the `notes`.
+- **URLs/dates from LLM tiers are often null**: visible text drops hrefs,
+  and most listings don't display posting dates. Honest nulls, never
+  guesses — measured zero hallucinated values across the whole run.
+- **A cached recipe pins the tier that worked when it was learned.** If a
+  better path appears later (site adds JSON-LD; router gains a new probe),
+  the recipe keeps winning until it fails validation or is deleted. Run
+  with `--no-cache` (or delete the domain entry) to force re-discovery
+  after router upgrades.
+- **Huge boards + haiku can exceed the 180s LLM timeout** (Palantir's
+  275-posting page took ~157s; bigger will trip it). The timeout is a
+  clean, logged failure that escalates — but chunked extraction would be
+  the real fix if this becomes common.
 
 ## Guardrails (defaults, not options)
 
