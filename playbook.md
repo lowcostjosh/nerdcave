@@ -129,10 +129,13 @@ probe missing marker-less custom pages.
   the recipe keeps winning until it fails validation or is deleted. Run
   with `--no-cache` (or delete the domain entry) to force re-discovery
   after router upgrades.
-- **Huge boards + haiku can exceed the 180s LLM timeout** (Palantir's
-  275-posting page took ~157s; bigger will trip it). The timeout is a
-  clean, logged failure that escalates — but chunked extraction would be
-  the real fix if this becomes common.
+- **Huge boards at the LLM tiers are now chunked, not truncated.** Jobs
+  content over 60k chars is split into up to 3 paragraph-boundary chunks,
+  extracted per chunk, then merged and deduped by normalized
+  (title, location); the chunk count is reported in `notes`. The per-call
+  LLM timeout was also raised 180→240s (Palantir's 275-posting page
+  measured ~157s). Recall on paginated boards is still fundamentally a
+  Tier-0 win — chunking only helps once all the content is on one page.
 
 ## Guardrails (defaults, not options)
 

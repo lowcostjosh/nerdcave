@@ -8,8 +8,8 @@
         "token": "gitlab"
       },
       "model": null,
-      "created_at": 1783554268.4708726,
-      "last_verified": 1783554271.2254033,
+      "created_at": 1783554368.6745608,
+      "last_verified": 1783554370.487079,
       "hits": 1,
       "stale": false,
       "stale_reason": null
@@ -24,8 +24,8 @@
         "token": "stripe"
       },
       "model": null,
-      "created_at": 1783554274.8608203,
-      "last_verified": 1783554274.8608208,
+      "created_at": 1783554374.5646098,
+      "last_verified": 1783554374.5646105,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -40,8 +40,8 @@
         "token": "palantir"
       },
       "model": null,
-      "created_at": 1783554278.3855135,
-      "last_verified": 1783554278.385514,
+      "created_at": 1783554377.8111782,
+      "last_verified": 1783554377.8111787,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -55,8 +55,8 @@
         "model": "haiku"
       },
       "model": "haiku",
-      "created_at": 1783554338.2228634,
-      "last_verified": 1783554338.2228642,
+      "created_at": 1783554437.259968,
+      "last_verified": 1783554437.2599683,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -68,8 +68,8 @@
       "method": "static_trafilatura",
       "params": {},
       "model": null,
-      "created_at": 1783554294.4696836,
-      "last_verified": 1783554294.4696841,
+      "created_at": 1783554393.7977664,
+      "last_verified": 1783554393.7977672,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -83,8 +83,8 @@
         "model": "haiku"
       },
       "model": "haiku",
-      "created_at": 1783554308.4434068,
-      "last_verified": 1783554308.4434075,
+      "created_at": 1783554409.042715,
+      "last_verified": 1783554409.0427158,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -96,8 +96,8 @@
       "method": "auth_wall",
       "params": {},
       "model": null,
-      "created_at": 1783554321.5632832,
-      "last_verified": 1783554321.563284,
+      "created_at": 1783554422.2511985,
+      "last_verified": 1783554422.251199,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -109,8 +109,8 @@
       "method": "static_trafilatura",
       "params": {},
       "model": null,
-      "created_at": 1783554325.1892054,
-      "last_verified": 1783554325.1892064,
+      "created_at": 1783554424.2251627,
+      "last_verified": 1783554424.2251632,
       "hits": 0,
       "stale": false,
       "stale_reason": null

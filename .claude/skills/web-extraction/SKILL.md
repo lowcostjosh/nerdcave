@@ -70,6 +70,12 @@ parser can read.
 - `blocked_robots` — robots.txt disallows. Respect it; tell the user.
 - `no_data` / `unreachable` — reachable-but-empty vs network failure;
   both come with the attempt ladder for diagnosis.
+- `error` — malformed input or an unexpected pipeline failure. The CLI
+  always still prints a valid result JSON (never a bare traceback).
+
+**Exit codes:** `0` = success or a clean refusal (`auth_required`,
+`blocked_robots`); `1` = `unreachable` / `no_data`; `2` = `error`
+(invalid URL or pipeline exception). Always parse stdout JSON regardless.
 
 ## The site-profile cache
 
