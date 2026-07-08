@@ -1,16 +1,16 @@
 {
-  "ts": 1783554450.1595697,
+  "ts": 1783554662.1477184,
   "all_pass": true,
   "results": [
     {
       "name": "1_tier0_url_and_cache",
       "passed": true,
       "tier": 0,
-      "latency_s": 1.7,
+      "latency_s": 1.2,
       "tokens": 0,
-      "wall_s": 4.3,
+      "wall_s": 4.0,
       "retried": false,
-      "detail": "tier0 count=145 latency=1.7 tokens=0 | cached method=ats_api(cached)"
+      "detail": "tier0 count=145 latency=1.2 tokens=0 | cached method=ats_api(cached)"
     },
     {
       "name": "2_slug_probe",
@@ -18,7 +18,7 @@
       "tier": 0,
       "latency_s": 0.0,
       "tokens": 0,
-      "wall_s": 4.1,
+      "wall_s": 3.7,
       "retried": false,
       "detail": "tier0 count=502 tokens=0"
     },
@@ -26,9 +26,9 @@
       "name": "3_lever",
       "passed": true,
       "tier": 0,
-      "latency_s": 2.4,
+      "latency_s": 3.1,
       "tokens": 0,
-      "wall_s": 3.2,
+      "wall_s": 3.9,
       "retried": false,
       "detail": "tier0 count=270"
     },
@@ -36,9 +36,9 @@
       "name": "4_spa_fields",
       "passed": true,
       "tier": 2,
-      "latency_s": 7.0,
-      "tokens": 25274,
-      "wall_s": 12.5,
+      "latency_s": 6.6,
+      "tokens": 25297,
+      "wall_s": 12.6,
       "retried": false,
       "detail": "tier2 author='Albert Einstein' total='10'"
     },
@@ -56,9 +56,9 @@
       "name": "6_fields_escalation",
       "passed": true,
       "tier": 1,
-      "latency_s": 10.1,
-      "tokens": 31525,
-      "wall_s": 15.2,
+      "latency_s": 13.9,
+      "tokens": 31773,
+      "wall_s": 19.4,
       "retried": false,
       "detail": "tier1 name='Pro' price='$17 per month'"
     },
@@ -68,7 +68,7 @@
       "tier": null,
       "latency_s": 0,
       "tokens": 0,
-      "wall_s": 1.1,
+      "wall_s": 1.2,
       "retried": false,
       "detail": "status=blocked_robots exit=0"
     },
@@ -78,7 +78,7 @@
       "tier": null,
       "latency_s": 0.0,
       "tokens": 0,
-      "wall_s": 12.1,
+      "wall_s": 12.7,
       "retried": false,
       "detail": "status=auth_required exit=0"
     },
@@ -88,7 +88,7 @@
       "tier": 1,
       "latency_s": 0.1,
       "tokens": 0,
-      "wall_s": 1.9,
+      "wall_s": 2.3,
       "retried": false,
       "detail": "https://developers.google.com/recaptcha/docs/display status=ok"
     },
@@ -106,9 +106,9 @@
       "name": "11_vision",
       "passed": true,
       "tier": 4,
-      "latency_s": 10.9,
-      "tokens": 50849,
-      "wall_s": 11.8,
+      "latency_s": 12.4,
+      "tokens": 50755,
+      "wall_s": 13.4,
       "retried": false,
       "detail": "tier4 author='Albert Einstein'"
     },
@@ -116,7 +116,7 @@
       "name": "12_unreachable",
       "passed": true,
       "tier": null,
-      "latency_s": 2.3,
+      "latency_s": 2.4,
       "tokens": 0,
       "wall_s": 11.9,
       "retried": false,
@@ -128,7 +128,7 @@
       "tier": null,
       "latency_s": 0,
       "tokens": 0,
-      "wall_s": 0.9,
+      "wall_s": 0.8,
       "retried": false,
       "detail": "status=error exit=2 traceback=False"
     }

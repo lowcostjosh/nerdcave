@@ -305,8 +305,14 @@ class Router:
         if min_tier > 2:
             page = t2.RenderedPage(url=url, error="skipped: min_tier > 2")
         else:
-            page = t2.render(url)
+            with Timer() as render_timer:
+                page = t2.render(url)
         if page.auth_wall:
+            # Record the render as an attempt so latency_s reflects the
+            # real cost of discovering the wall.
+            result.add_attempt(Attempt(tier=2, method="render_auth_check",
+                                       latency_s=render_timer.elapsed,
+                                       success=False, error="auth wall detected"))
             result.status = "auth_required"
             result.notes = "auth wall detected after rendering — out of scope, needs auth"
             self.cache.put(url, task.kind, Recipe(tier=2, method="auth_wall", params={}))

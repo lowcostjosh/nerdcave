@@ -49,14 +49,14 @@
   },
   "quotes.toscrape.com": {
     "fields": {
-      "tier": 2,
-      "method": "rendered_llm",
+      "tier": 4,
+      "method": "vision",
       "params": {
         "model": "haiku"
       },
       "model": "haiku",
-      "created_at": 1783554595.6575122,
-      "last_verified": 1783554595.6575127,
+      "created_at": 1783554649.292123,
+      "last_verified": 1783554649.2921233,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -70,6 +70,58 @@
       "model": null,
       "created_at": 1783554599.0649476,
       "last_verified": 1783554599.0649486,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "www.anthropic.com": {
+    "fields": {
+      "tier": 1,
+      "method": "static_llm",
+      "params": {
+        "model": "haiku"
+      },
+      "model": "haiku",
+      "created_at": 1783554618.564425,
+      "last_verified": 1783554618.564426,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "www.figma.com": {
+    "page_info": {
+      "tier": 2,
+      "method": "auth_wall",
+      "params": {},
+      "model": null,
+      "created_at": 1783554632.4135585,
+      "last_verified": 1783554632.4135594,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    },
+    "jobs": {
+      "tier": 2,
+      "method": "auth_wall",
+      "params": {},
+      "model": null,
+      "created_at": 1783554735.5223944,
+      "last_verified": 1783554735.5223951,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "developers.google.com": {
+    "page_info": {
+      "tier": 1,
+      "method": "static_trafilatura",
+      "params": {},
+      "model": null,
+      "created_at": 1783554634.7113488,
+      "last_verified": 1783554634.7113495,
       "hits": 0,
       "stale": false,
       "stale_reason": null
