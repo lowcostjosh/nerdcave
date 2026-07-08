@@ -1,0 +1,136 @@
+{
+  "ts": 1783554351.14552,
+  "all_pass": true,
+  "results": [
+    {
+      "name": "1_tier0_url_and_cache",
+      "passed": true,
+      "tier": 0,
+      "latency_s": 0.5,
+      "tokens": 0,
+      "wall_s": 4.2,
+      "retried": false,
+      "detail": "tier0 count=145 latency=0.5 tokens=0 | cached method=ats_api(cached)"
+    },
+    {
+      "name": "2_slug_probe",
+      "passed": true,
+      "tier": 0,
+      "latency_s": 0.0,
+      "tokens": 0,
+      "wall_s": 3.6,
+      "retried": false,
+      "detail": "tier0 count=502 tokens=0"
+    },
+    {
+      "name": "3_lever",
+      "passed": true,
+      "tier": 0,
+      "latency_s": 2.7,
+      "tokens": 0,
+      "wall_s": 3.5,
+      "retried": false,
+      "detail": "tier0 count=270"
+    },
+    {
+      "name": "4_spa_fields",
+      "passed": true,
+      "tier": 2,
+      "latency_s": 6.4,
+      "tokens": 25290,
+      "wall_s": 12.5,
+      "retried": false,
+      "detail": "tier2 author='Albert Einstein' total='10'"
+    },
+    {
+      "name": "5_static_page_info",
+      "passed": true,
+      "tier": 1,
+      "latency_s": 1.9,
+      "tokens": 0,
+      "wall_s": 3.6,
+      "retried": false,
+      "detail": "tier1 tokens=0"
+    },
+    {
+      "name": "6_fields_escalation",
+      "passed": true,
+      "tier": 1,
+      "latency_s": 10.1,
+      "tokens": 31425,
+      "wall_s": 13.9,
+      "retried": false,
+      "detail": "tier1 name='Pro' price='$17 per month with annual subscription ($200 billed up front)'"
+    },
+    {
+      "name": "7_guardrail_robots",
+      "passed": true,
+      "tier": null,
+      "latency_s": 0,
+      "tokens": 0,
+      "wall_s": 1.3,
+      "retried": false,
+      "detail": "status=blocked_robots exit=0"
+    },
+    {
+      "name": "8_guardrail_auth",
+      "passed": true,
+      "tier": null,
+      "latency_s": 0.0,
+      "tokens": 0,
+      "wall_s": 11.8,
+      "retried": false,
+      "detail": "status=auth_required exit=0"
+    },
+    {
+      "name": "9_captcha_false_positive",
+      "passed": true,
+      "tier": 1,
+      "latency_s": 0.1,
+      "tokens": 0,
+      "wall_s": 3.6,
+      "retried": false,
+      "detail": "https://developers.google.com/recaptcha/docs/display status=ok"
+    },
+    {
+      "name": "10_embed_crosstalk_offline",
+      "passed": true,
+      "tier": null,
+      "latency_s": 0,
+      "tokens": 0,
+      "wall_s": 1.0,
+      "retried": false,
+      "detail": "blog_link=None embed=('lever', 'realco')"
+    },
+    {
+      "name": "11_vision",
+      "passed": true,
+      "tier": 4,
+      "latency_s": 11.2,
+      "tokens": 50802,
+      "wall_s": 12.0,
+      "retried": false,
+      "detail": "tier4 author='Albert Einstein'"
+    },
+    {
+      "name": "12_unreachable",
+      "passed": true,
+      "tier": null,
+      "latency_s": 2.3,
+      "tokens": 0,
+      "wall_s": 12.0,
+      "retried": false,
+      "detail": "status=unreachable exit=1"
+    },
+    {
+      "name": "13_crash_safety",
+      "passed": true,
+      "tier": null,
+      "latency_s": 0,
+      "tokens": 0,
+      "wall_s": 0.8,
+      "retried": false,
+      "detail": "status=error exit=2 traceback=False"
+    }
+  ]
+}

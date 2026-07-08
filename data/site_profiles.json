@@ -1,20 +1,21 @@
 {
   "job-boards.greenhouse.io/gitlab": {
     "jobs": {
-      "tier": 1,
-      "method": "static_llm",
+      "tier": 0,
+      "method": "ats_api",
       "params": {
-        "model": "haiku"
+        "platform": "greenhouse",
+        "token": "gitlab"
       },
-      "model": "haiku",
-      "created_at": 1783439360.640355,
-      "last_verified": 1783439360.6403773,
-      "hits": 0,
+      "model": null,
+      "created_at": 1783554268.4708726,
+      "last_verified": 1783554271.2254033,
+      "hits": 1,
       "stale": false,
       "stale_reason": null
     }
   },
-  "boards.greenhouse.io/stripe": {
+  "stripe.com": {
     "jobs": {
       "tier": 0,
       "method": "ats_api",
@@ -23,8 +24,39 @@
         "token": "stripe"
       },
       "model": null,
-      "created_at": 1783385894.4879892,
-      "last_verified": 1783385894.4879894,
+      "created_at": 1783554274.8608203,
+      "last_verified": 1783554274.8608208,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "jobs.lever.co/palantir": {
+    "jobs": {
+      "tier": 0,
+      "method": "ats_api",
+      "params": {
+        "platform": "lever",
+        "token": "palantir"
+      },
+      "model": null,
+      "created_at": 1783554278.3855135,
+      "last_verified": 1783554278.385514,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "quotes.toscrape.com": {
+    "fields": {
+      "tier": 4,
+      "method": "vision",
+      "params": {
+        "model": "haiku"
+      },
+      "model": "haiku",
+      "created_at": 1783554338.2228634,
+      "last_verified": 1783554338.2228642,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -33,26 +65,11 @@
   "www.python.org": {
     "page_info": {
       "tier": 1,
-      "method": "static_llm",
-      "params": {
-        "model": "haiku"
-      },
-      "model": "haiku",
-      "created_at": 1783438923.3393142,
-      "last_verified": 1783438923.3393145,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    },
-    "fields": {
-      "tier": 1,
-      "method": "static_llm",
-      "params": {
-        "model": "haiku"
-      },
-      "model": "haiku",
-      "created_at": 1783438943.8353407,
-      "last_verified": 1783438943.8353412,
+      "method": "static_trafilatura",
+      "params": {},
+      "model": null,
+      "created_at": 1783554294.4696836,
+      "last_verified": 1783554294.4696841,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -66,82 +83,34 @@
         "model": "haiku"
       },
       "model": "haiku",
-      "created_at": 1783385930.9433045,
-      "last_verified": 1783385930.943305,
+      "created_at": 1783554308.4434068,
+      "last_verified": 1783554308.4434075,
       "hits": 0,
       "stale": false,
       "stale_reason": null
-    },
+    }
+  },
+  "www.figma.com": {
+    "page_info": {
+      "tier": 2,
+      "method": "auth_wall",
+      "params": {},
+      "model": null,
+      "created_at": 1783554321.5632832,
+      "last_verified": 1783554321.563284,
+      "hits": 0,
+      "stale": false,
+      "stale_reason": null
+    }
+  },
+  "developers.google.com": {
     "page_info": {
       "tier": 1,
-      "method": "static_llm",
-      "params": {
-        "model": "haiku"
-      },
-      "model": "haiku",
-      "created_at": 1783438971.8018415,
-      "last_verified": 1783438971.8018417,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "quotes.toscrape.com": {
-    "fields": {
-      "tier": 2,
-      "method": "rendered_llm",
-      "params": {
-        "model": "haiku"
-      },
-      "model": "haiku",
-      "created_at": 1783438851.5924904,
-      "last_verified": 1783438851.5924907,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "job-boards.greenhouse.io/anthropic": {
-    "jobs": {
-      "tier": 1,
-      "method": "static_llm",
-      "params": {
-        "model": "haiku"
-      },
-      "model": "haiku",
-      "created_at": 1783439467.2362251,
-      "last_verified": 1783439467.2362256,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "stripe.com": {},
-  "jobs.lever.co/palantir": {
-    "jobs": {
-      "tier": 1,
-      "method": "static_llm",
-      "params": {
-        "model": "haiku"
-      },
-      "model": "haiku",
-      "created_at": 1783470192.9216013,
-      "last_verified": 1783470192.9216022,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "jobs.lever.co/wealthfront": {
-    "jobs": {
-      "tier": 1,
-      "method": "static_llm",
-      "params": {
-        "model": "haiku"
-      },
-      "model": "haiku",
-      "created_at": 1783470291.5061028,
-      "last_verified": 1783470291.506104,
+      "method": "static_trafilatura",
+      "params": {},
+      "model": null,
+      "created_at": 1783554325.1892054,
+      "last_verified": 1783554325.1892064,
       "hits": 0,
       "stale": false,
       "stale_reason": null
