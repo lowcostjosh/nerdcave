@@ -8,12 +8,17 @@ import pandas as pd
 
 from lss_copilot.connectors.base import Connector
 
-# Common aliases seen in exported process data; extend as needed.
+# Common aliases seen in exported process data, in priority order; extend as needed.
 _COLUMN_ALIASES = {
-    "case_id": {"case_id", "case", "id", "ticket", "ticket_id", "order_id", "issue_key"},
-    "activity": {"activity", "status", "state", "step", "stage", "event"},
-    "timestamp": {"timestamp", "time", "date", "created_at", "updated_at", "event_time"},
+    "case_id": ["case_id", "case", "ticket_id", "ticket", "issue_key", "order_id", "id"],
+    "activity": ["activity", "status", "state", "stage", "step", "event"],
+    "timestamp": ["timestamp", "event_time", "updated_at", "created_at", "time", "date"],
 }
+
+
+def _normalize(name: str) -> str:
+    """'Ticket ID' / 'ticket-id' / ' Ticket_Id ' -> 'ticket_id'."""
+    return name.strip().lower().replace("-", "_").replace(" ", "_")
 
 
 class FileUploadConnector(Connector):
@@ -29,14 +34,16 @@ class FileUploadConnector(Connector):
 
     def to_event_log(self, raw: pd.DataFrame) -> pd.DataFrame:
         df = raw.copy()
-        lowered = {c.lower().strip(): c for c in df.columns}
+        normalized = {}
+        for col in df.columns:  # first occurrence wins on collision
+            normalized.setdefault(_normalize(col), col)
         renames: dict[str, str] = {}
+        claimed: set[str] = set()
         for target, aliases in _COLUMN_ALIASES.items():
-            if target in lowered:
-                renames[lowered[target]] = target
-                continue
-            for alias in aliases:
-                if alias in lowered:
-                    renames[lowered[alias]] = target
+            for alias in [target, *aliases]:
+                raw_col = normalized.get(alias)
+                if raw_col is not None and raw_col not in claimed:
+                    renames[raw_col] = target
+                    claimed.add(raw_col)
                     break
         return super().to_event_log(df.rename(columns=renames))

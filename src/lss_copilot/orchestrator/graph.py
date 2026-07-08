@@ -87,9 +87,13 @@ class Orchestrator:
 
         mining_env = self.mining.run(state, brief="Establish the quantitative baseline", dataset=ref)
         self._absorb(state, mining_env)
+        baseline = mining_env.payload
+        datasets = {ref.key: ref}
+        if baseline.feature_table is not None:
+            datasets[baseline.feature_table.key] = baseline.feature_table
         return {
-            "datasets": {ref.key: ref},
-            "baseline": mining_env.payload,
+            "datasets": datasets,
+            "baseline": baseline,
             "phase": DMAICPhase.MEASURE,
             "ledger": state.ledger,
         }

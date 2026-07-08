@@ -58,8 +58,8 @@ flowchart TB
 |---|---|---|
 | **Define** | Qualitative agent drafts `ProjectCharter` + SIPOC from the rough problem text | MEDIUM |
 | *tollgate* | LangGraph `interrupt()` — human approves before any data is pulled | — |
-| **Measure** | Intake pulls & normalizes events → Mining computes baseline (cycle time, defect rate, PCE, Mermaid VSM, bottlenecks) | LOW + MEDIUM |
-| **Analyze** | Stat engine executes Pareto/regression/hypothesis tests; NLP agent builds fishbone + FMEA; orchestrator fuses both into ≤3 verified `RootCause`s | LOW + MEDIUM + **one HIGH call** |
+| **Measure** | Intake pulls & normalizes events → Mining computes baseline (cycle time, defect rate, PCE, Mermaid VSM, bottlenecks, revisit-based rework loops) and rolls the log up to a **per-case feature table** (`cycle_hours`, dwell times, attributes) | LOW + MEDIUM |
+| **Analyze** | Stat engine runs Pareto/regression/hypothesis tests against the feature table (categorical factors auto one-hot encoded); NLP agent builds fishbone + FMEA; orchestrator fuses both into ≤3 verified `RootCause`s | LOW + MEDIUM + **one HIGH call** |
 | *tollgate* | Human reviews root causes | — |
 | **Improve** | Prototyping agent drafts automations (Python / Make / Zapier / Firebase), statically vetted before storage | MEDIUM |
 | *tollgate* | Human approves rollout | — |
@@ -74,7 +74,7 @@ src/lss_copilot/
 ├── orchestrator/        # LangGraph DMAIC graph + the only HIGH-tier prompts
 ├── agents/              # the five sub-agents + tier-enforced LLM router
 ├── connectors/          # Jira · SQL · Salesforce · HubSpot · CSV/Excel → event log
-├── mining/              # process mining, PCE, Mermaid VSM
+├── mining/              # process mining, PCE, Mermaid VSM, case feature table
 ├── stats/               # descriptive · Cp/Cpk · hypothesis · OLS · Pareto · SPC
 ├── tools/               # sandbox (AST + rlimits) · artifact store
 ├── control/             # SPC monitor polling loop + control plan

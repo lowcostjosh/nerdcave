@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 
 from lss_copilot.config import ModelTier
 from lss_copilot.agents.base import SubAgent
+from lss_copilot.mining.features import case_feature_table
 from lss_copilot.mining.process_mining import mine_process, process_cycle_efficiency
 from lss_copilot.state.schemas import (
     AgentName,
@@ -79,6 +80,13 @@ class ProcessMiningAgent(SubAgent):
         mermaid = model.to_mermaid()
         self.store.put_text(mermaid, f"{state.project_id}_vsm.mmd")
 
+        # Roll the log up to one row per case so ANALYZE can regress the Y
+        # (cycle_hours) against candidate X's (attributes, dwell times).
+        features = case_feature_table(events)
+        feature_ref = self.store.put_dataframe(
+            features, ref.source_system, name=f"{state.project_id}_case_features"
+        )
+
         baseline = ProcessBaseline(
             mean_cycle_time_hours=model.mean_cycle_time_hours,
             median_cycle_time_hours=model.median_cycle_time_hours,
@@ -87,9 +95,10 @@ class ProcessMiningAgent(SubAgent):
             process_cycle_efficiency=pce,
             value_stream_mermaid=mermaid,
             bottlenecks=[f"{a} -> {b}" for a, b in model.bottlenecks],
-            rework_loops=[f"{a} <-> {b}" for a, b in model.rework_loops],
+            rework_loops=[f"{a} -> {b} (revisit)" for a, b in model.rework_loops],
             variant_count=len(model.variants),
             dataset=ref,
+            feature_table=feature_ref,
         )
         notes = f"Mined {n_cases} cases, {len(model.variants)} variants"
         if usage is None:

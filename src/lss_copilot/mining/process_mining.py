@@ -16,6 +16,14 @@ import pandas as pd
 REQUIRED_COLUMNS = {"case_id", "activity", "timestamp"}
 
 
+def _mermaid_label(text: str) -> str:
+    """Quotes and HTML-ish characters break Mermaid node/edge labels."""
+    return (text.replace('"', "'")
+                .replace("<", "(").replace(">", ")")
+                .replace("[", "(").replace("]", ")")
+                .replace("{", "(").replace("}", ")"))
+
+
 @dataclass
 class ProcessModel:
     activities: list[str]
@@ -32,22 +40,22 @@ class ProcessModel:
         ids = {a: f"n{i}" for i, a in enumerate(self.activities)}
         lines = ["flowchart LR"]
         for a in self.activities:
-            lines.append(f'    {ids[a]}["{a}"]')
+            lines.append(f'    {ids[a]}["{_mermaid_label(a)}"]')
         top = sorted(self.transition_counts.items(), key=lambda kv: kv[1], reverse=True)
-        for (src, dst), count in top[:max_edges]:
+        rendered = [edge for edge, _ in top[:max_edges]]
+        # Bottlenecks must be visible even when rare (slow-but-infrequent edges).
+        for edge in self.bottlenecks:
+            if edge not in rendered and edge in self.transition_counts:
+                rendered.append(edge)
+        for src, dst in rendered:
+            count = self.transition_counts[(src, dst)]
             hours = self.transition_mean_hours.get((src, dst), 0.0)
             lines.append(f'    {ids[src]} -->|"{count}x, {hours:.1f}h"| {ids[dst]}')
-        for src, dst in self.bottlenecks:
-            lines.append(f"    linkStyle {self._edge_index(top[:max_edges], src, dst)} "
-                         "stroke:#d62728,stroke-width:3px")
+        for edge in self.bottlenecks:
+            if edge in rendered:
+                lines.append(f"    linkStyle {rendered.index(edge)} "
+                             "stroke:#d62728,stroke-width:3px")
         return "\n".join(lines)
-
-    @staticmethod
-    def _edge_index(edges: list[tuple[tuple[str, str], int]], src: str, dst: str) -> int:
-        for i, ((s, d), _) in enumerate(edges):
-            if (s, d) == (src, dst):
-                return i
-        return 0
 
 
 def mine_process(events: pd.DataFrame, bottleneck_top_n: int = 3) -> ProcessModel:
@@ -63,19 +71,23 @@ def mine_process(events: pd.DataFrame, bottleneck_top_n: int = 3) -> ProcessMode
     durations: dict[tuple[str, str], list[float]] = defaultdict(list)
     variants: Counter[tuple[str, ...]] = Counter()
     cycle_times: list[float] = []
+    revisit_edges: set[tuple[str, str]] = set()
 
     for _, case in df.groupby("case_id", sort=False):
         acts = case["activity"].tolist()
         times = case["timestamp"].tolist()
         variants[tuple(acts)] += 1
         cycle_times.append((times[-1] - times[0]).total_seconds() / 3600)
+        seen: set[str] = {acts[0]}
         for (a, t1), (b, t2) in zip(zip(acts, times), zip(acts[1:], times[1:])):
             transition_counts[(a, b)] += 1
             durations[(a, b)].append((t2 - t1).total_seconds() / 3600)
+            if b in seen:  # re-entering an earlier state = rework, even via intermediates
+                revisit_edges.add((a, b))
+            seen.add(b)
 
     transition_mean = {k: sum(v) / len(v) for k, v in durations.items()}
-    rework = [(a, b) for (a, b) in transition_counts
-              if (b, a) in transition_counts or a == b]
+    rework = list(revisit_edges)
     # Bottleneck = slowest transitions weighted by how often they occur
     weighted = sorted(
         transition_mean.items(),

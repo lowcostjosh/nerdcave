@@ -79,7 +79,11 @@ class StatisticalEngineAgent(SubAgent):
         dataset: DataSourceRef | None = None,
         plan: list[PlannedTest] | None = None,
     ) -> HandoffEnvelope:
-        ref = dataset or (state.baseline.dataset if state.baseline else None) \
+        # Prefer the per-case feature table: that's where the Y and the X's live.
+        baseline = state.baseline
+        ref = dataset \
+            or (baseline.feature_table if baseline else None) \
+            or (baseline.dataset if baseline else None) \
             or next(iter(state.datasets.values()), None)
         if ref is None:
             raise ValueError("statistical engine requires a dataset reference")
@@ -138,10 +142,17 @@ class StatisticalEngineAgent(SubAgent):
         if test.kind == "regression":
             cols = [test.target_metric, *test.factors]
             clean = df[cols].dropna()
+            X: dict[str, list[float]] = {}
+            for f in test.factors:
+                col = clean[f]
+                if pd.api.types.is_numeric_dtype(col) or pd.api.types.is_bool_dtype(col):
+                    X[f] = col.astype(float).tolist()
+                else:  # categorical factor: one-hot encode (drop first level)
+                    dummies = pd.get_dummies(col.astype(str), prefix=f, drop_first=True)
+                    for dcol in dummies.columns:
+                        X[dcol] = dummies[dcol].astype(float).tolist()
             return [ols_regression(
-                test.target_metric,
-                clean[test.target_metric].tolist(),
-                {f: clean[f].tolist() for f in test.factors},
+                test.target_metric, clean[test.target_metric].astype(float).tolist(), X,
             )]
         if test.kind == "pareto":
             counts = df.groupby(test.group_by)[test.target_metric].sum().to_dict() \

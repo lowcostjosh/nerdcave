@@ -64,7 +64,9 @@ def build_control_plan(
         plan.monitored_metrics.append(metric)
         plan.center_line[metric] = limits["center_line"]
         plan.ucl[metric] = limits["ucl"]
-        plan.lcl[metric] = limits["lcl"]
+        # Cycle time and throughput cannot go negative; a sub-zero LCL would
+        # make "process too low" alerts unfireable.
+        plan.lcl[metric] = max(limits["lcl"], 0.0)
     if ctq_metrics:
         plan.response_plan += f" CTQ watch list: {', '.join(ctq_metrics)}."
     return plan

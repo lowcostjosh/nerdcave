@@ -32,7 +32,8 @@ class Connector(ABC):
                 f"{self.source_system}: cannot normalize, missing columns {missing}"
             )
         df = raw.copy()
-        df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
+        # format="mixed": real exports mix precisions/offsets row to row.
+        df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, format="mixed")
         df = df.dropna(subset=STANDARD_COLUMNS)
         df["case_id"] = df["case_id"].astype(str)
         df["activity"] = df["activity"].astype(str).str.strip()

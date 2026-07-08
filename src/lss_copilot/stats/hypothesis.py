@@ -19,6 +19,8 @@ _NORMALITY_MIN_N = 8
 def _is_normal(sample: np.ndarray) -> bool:
     if sample.size < _NORMALITY_MIN_N:
         return False  # too small to trust normality; use non-parametric
+    if np.ptp(sample) == 0:
+        return False  # constant data; shapiro is undefined
     _, p = sps.shapiro(sample[:5000])  # shapiro caps out; 5k is plenty
     return p > ALPHA
 

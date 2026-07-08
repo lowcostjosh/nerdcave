@@ -7,6 +7,7 @@ prose is for humans; agents exchange typed artifacts.
 
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 from enum import StrEnum
 from typing import Annotated, Any, Generic, TypeVar
@@ -91,6 +92,10 @@ class ProcessBaseline(BaseModel):
     rework_loops: list[str] = Field(default_factory=list)
     variant_count: int = 0
     dataset: DataSourceRef | None = None
+    feature_table: DataSourceRef | None = Field(
+        default=None,
+        description="Per-case rollup (cycle_hours, dwell times, attributes) for ANALYZE",
+    )
 
 
 # --------------------------------------------------------------------------
@@ -123,12 +128,15 @@ class FishboneDiagram(BaseModel):
     )
 
     def to_mermaid(self) -> str:
-        lines = ["mindmap", f"  root(({self.effect}))"]
+        def clean(text: str) -> str:  # parens/brackets/quotes break mindmap nodes
+            return re.sub(r'[()\[\]{}"]', " ", text).strip()
+
+        lines = ["mindmap", f"  root(({clean(self.effect)}))"]
         for category, items in self.causes.items():
             if not items:
                 continue
-            lines.append(f"    {category}")
-            lines.extend(f"      {item}" for item in items)
+            lines.append(f"    {clean(category)}")
+            lines.extend(f"      {clean(item)}" for item in items)
         return "\n".join(lines)
 
 

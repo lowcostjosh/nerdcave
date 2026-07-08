@@ -68,8 +68,10 @@ class StubLLM:
                 value_add=["Fix", "Done"], non_value_add=["Triage", "Reopened"]
             )
         if schema is AnalysisPlan:
+            # Planned against the case feature table the engine now defaults to.
             return AnalysisPlan([
-                PlannedTest(kind="pareto", target_metric="count", group_by="activity"),
+                PlannedTest(kind="describe", target_metric="cycle_hours"),
+                PlannedTest(kind="pareto", target_metric="count", group_by="reworked"),
             ])
         if schema is QualitativeAnalysis:
             return QualitativeAnalysis(
@@ -149,8 +151,12 @@ def test_full_dmaic_run(event_csv, tmp_path):
     assert "Triage -> Fix" in final.baseline.bottlenecks
     assert final.baseline.value_stream_mermaid.startswith("flowchart")
     assert 0 < final.baseline.process_cycle_efficiency < 1
-    # ANALYZE: executed pareto + synthesized root causes
+    # ANALYZE: deterministic execution on the auto-built feature table
+    described = next(f for f in final.findings if f.test_name == "descriptive")
+    assert described.statistic == pytest.approx(32.0)  # true planted cycle time
     assert any(f.test_name == "pareto" for f in final.findings)
+    assert final.baseline.feature_table is not None
+    assert final.baseline.feature_table.key in final.datasets
     assert len(final.root_causes) == 1 and final.root_causes[0].confidence == 0.85
     assert final.fmea[0].rpn == 8 * 7 * 3
     # IMPROVE
