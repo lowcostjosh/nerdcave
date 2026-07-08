@@ -8,8 +8,8 @@
         "token": "gitlab"
       },
       "model": null,
-      "created_at": 1783554368.6745608,
-      "last_verified": 1783554370.487079,
+      "created_at": 1783554573.4433365,
+      "last_verified": 1783554575.4219313,
       "hits": 1,
       "stale": false,
       "stale_reason": null
@@ -24,8 +24,8 @@
         "token": "stripe"
       },
       "model": null,
-      "created_at": 1783554374.5646098,
-      "last_verified": 1783554374.5646105,
+      "created_at": 1783554579.125432,
+      "last_verified": 1783554579.1254325,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -40,8 +40,8 @@
         "token": "palantir"
       },
       "model": null,
-      "created_at": 1783554377.8111782,
-      "last_verified": 1783554377.8111787,
+      "created_at": 1783554583.05285,
+      "last_verified": 1783554583.0528505,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -49,14 +49,14 @@
   },
   "quotes.toscrape.com": {
     "fields": {
-      "tier": 4,
-      "method": "vision",
+      "tier": 2,
+      "method": "rendered_llm",
       "params": {
         "model": "haiku"
       },
       "model": "haiku",
-      "created_at": 1783554437.259968,
-      "last_verified": 1783554437.2599683,
+      "created_at": 1783554595.6575122,
+      "last_verified": 1783554595.6575127,
       "hits": 0,
       "stale": false,
       "stale_reason": null
@@ -68,49 +68,8 @@
       "method": "static_trafilatura",
       "params": {},
       "model": null,
-      "created_at": 1783554393.7977664,
-      "last_verified": 1783554393.7977672,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "www.anthropic.com": {
-    "fields": {
-      "tier": 1,
-      "method": "static_llm",
-      "params": {
-        "model": "haiku"
-      },
-      "model": "haiku",
-      "created_at": 1783554409.042715,
-      "last_verified": 1783554409.0427158,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "www.figma.com": {
-    "page_info": {
-      "tier": 2,
-      "method": "auth_wall",
-      "params": {},
-      "model": null,
-      "created_at": 1783554422.2511985,
-      "last_verified": 1783554422.251199,
-      "hits": 0,
-      "stale": false,
-      "stale_reason": null
-    }
-  },
-  "developers.google.com": {
-    "page_info": {
-      "tier": 1,
-      "method": "static_trafilatura",
-      "params": {},
-      "model": null,
-      "created_at": 1783554424.2251627,
-      "last_verified": 1783554424.2251632,
+      "created_at": 1783554599.0649476,
+      "last_verified": 1783554599.0649486,
       "hits": 0,
       "stale": false,
       "stale_reason": null
